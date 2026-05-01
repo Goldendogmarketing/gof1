@@ -1,0 +1,11 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#FBF7ED"/>
+  <rect x="0" y="574" width="1200" height="226" fill="#D7C6AA"/>
+  <path d="M531 110h138l28 112v405c0 85-60 141-97 141s-97-56-97-141V222l28-112Z" fill="#172214"/>
+  <rect x="545" y="92" width="110" height="128" fill="#30401F"/>
+  <rect x="490" y="350" width="220" height="238" rx="10" fill="#FBF7ED"/>
+  <path d="M531 438h138" stroke="#C8A85A" stroke-width="3"/>
+  <text x="600" y="485" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="39">GREEK</text>
+  <text x="600" y="531" text-anchor="middle" fill="#68753C" font-family="Georgia,serif" font-size="27">OLIVE FUSION</text>
+  <path d="M275 612h650" stroke="#98752F" stroke-width="18" stroke-linecap="round" opacity=".25"/>
+</svg>

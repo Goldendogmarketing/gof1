@@ -1,0 +1,11 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#F7F0DF"/>
+  <circle cx="450" cy="530" r="320" fill="#CCD3B2"/>
+  <path d="M392 209h116l23 91v505c0 68-49 113-81 113s-81-45-81-113V300l23-91Z" fill="#172214"/>
+  <path d="M411 198h78v88h-78z" fill="#30401F"/>
+  <rect x="349" y="474" width="202" height="220" rx="8" fill="#FBF7ED"/>
+  <text x="450" y="551" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="34">ROSEMARY</text>
+  <text x="450" y="594" text-anchor="middle" fill="#68753C" font-family="Georgia,serif" font-size="24">INFUSED OIL</text>
+  <path d="M628 653c-41 91-33 171 23 239" stroke="#68753C" stroke-width="15" stroke-linecap="round"/>
+  <path d="M615 694l-69-8M616 729l-76 16M622 767l-66 35M637 808l-54 52M641 681l64-25M644 720l70-4M654 760l64 18M667 800l55 37" stroke="#30401F" stroke-width="10" stroke-linecap="round"/>
+</svg>

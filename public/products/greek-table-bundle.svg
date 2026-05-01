@@ -1,0 +1,18 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#FBF7ED"/>
+  <circle cx="450" cy="530" r="340" fill="#E5E6CB"/>
+  <g transform="translate(120 0)">
+    <path d="M250 248h86l17 70v465c0 52-37 87-60 87s-60-35-60-87V318l17-70Z" fill="#172214"/>
+    <rect x="228" y="490" width="130" height="160" rx="8" fill="#FBF7ED"/>
+  </g>
+  <g>
+    <path d="M407 203h100l20 82v530c0 64-43 105-70 105s-70-41-70-105V285l20-82Z" fill="#30401F"/>
+    <rect x="372" y="480" width="170" height="205" rx="8" fill="#FFFDF5"/>
+    <text x="457" y="567" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="35">TABLE</text>
+  </g>
+  <g transform="translate(260 0)">
+    <path d="M250 248h86l17 70v465c0 52-37 87-60 87s-60-35-60-87V318l17-70Z" fill="#68753C"/>
+    <rect x="228" y="490" width="130" height="160" rx="8" fill="#FBF7ED"/>
+  </g>
+  <path d="M184 827c139-67 277-72 414-15-135 84-273 89-414 15Z" fill="#68753C" opacity=".65"/>
+</svg>

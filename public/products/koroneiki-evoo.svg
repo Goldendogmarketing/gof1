@@ -1,0 +1,11 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#F7F0DF"/>
+  <circle cx="451" cy="524" r="330" fill="#E5E6CB"/>
+  <path d="M392 209h116l23 91v505c0 68-49 113-81 113s-81-45-81-113V300l23-91Z" fill="#172214"/>
+  <path d="M411 198h78v88h-78z" fill="#30401F"/>
+  <rect x="359" y="474" width="182" height="220" rx="8" fill="#FBF7ED"/>
+  <text x="450" y="546" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="36">KORONEIKI</text>
+  <text x="450" y="589" text-anchor="middle" fill="#68753C" font-family="Georgia,serif" font-size="24">EXTRA VIRGIN</text>
+  <path d="M205 788c106-54 204-61 296-20-92 64-191 71-296 20Z" fill="#68753C" opacity=".75"/>
+  <path d="M507 810c72-70 151-96 238-80-54 86-133 112-238 80Z" fill="#30401F" opacity=".8"/>
+</svg>

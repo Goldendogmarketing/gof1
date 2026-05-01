@@ -1,0 +1,11 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#F7F0DF"/>
+  <circle cx="450" cy="530" r="320" fill="#C9B99D"/>
+  <path d="M392 209h116l23 91v505c0 68-49 113-81 113s-81-45-81-113V300l23-91Z" fill="#172214"/>
+  <path d="M411 198h78v88h-78z" fill="#30401F"/>
+  <rect x="359" y="474" width="182" height="220" rx="8" fill="#FBF7ED"/>
+  <text x="450" y="551" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="34">TRUFFLE</text>
+  <text x="450" y="594" text-anchor="middle" fill="#98752F" font-family="Georgia,serif" font-size="24">INFUSED OIL</text>
+  <path d="M569 768c28-65 105-88 151-39 35 38 19 94-35 116-79 32-141 2-116-77Z" fill="#5B4635"/>
+  <path d="M609 783c24-19 51-25 80-16" stroke="#D7C6AA" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+</svg>

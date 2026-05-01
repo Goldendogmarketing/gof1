@@ -1,0 +1,12 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#FBF7ED"/>
+  <circle cx="450" cy="530" r="320" fill="#F0DFA8"/>
+  <path d="M392 209h116l23 91v505c0 68-49 113-81 113s-81-45-81-113V300l23-91Z" fill="#30401F"/>
+  <path d="M411 198h78v88h-78z" fill="#68753C"/>
+  <rect x="359" y="474" width="182" height="220" rx="8" fill="#FFFDF5"/>
+  <text x="450" y="551" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="38">LEMON</text>
+  <text x="450" y="594" text-anchor="middle" fill="#98752F" font-family="Georgia,serif" font-size="24">INFUSED OIL</text>
+  <circle cx="665" cy="731" r="84" fill="#D5A836"/>
+  <circle cx="650" cy="716" r="56" fill="#F8D95A"/>
+  <path d="M183 791c91-47 176-53 255-18-78 55-163 61-255 18Z" fill="#68753C"/>
+</svg>

@@ -1,0 +1,20 @@
+import { Hero } from "@/components/hero";
+import { HeritageBand } from "@/components/heritage-band";
+import { OliveJourney } from "@/components/olive-journey";
+import { PairingsBand } from "@/components/pairings-band";
+import { ProductCarousel } from "@/components/product-carousel";
+import { getFeaturedProducts, getJourneyScenes } from "@/lib/products";
+
+export default async function HomePage() {
+  const [featuredProducts, journeyScenes] = await Promise.all([getFeaturedProducts(), getJourneyScenes()]);
+
+  return (
+    <main>
+      <Hero />
+      <ProductCarousel products={featuredProducts} />
+      <OliveJourney scenes={journeyScenes} compact />
+      <PairingsBand />
+      <HeritageBand />
+    </main>
+  );
+}

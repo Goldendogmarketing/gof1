@@ -1,0 +1,15 @@
+<svg width="520" height="160" viewBox="0 0 520 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Greek Olive Fusion</title>
+  <desc id="desc">A premium olive branch mark with Greek Olive Fusion wordmark.</desc>
+  <rect width="520" height="160" rx="0" fill="#FBF7ED"/>
+  <path d="M104 77c-25 12-48 13-68 2 21-16 43-21 68-2Z" fill="#68753C"/>
+  <path d="M118 71c15-23 34-35 58-35-8 26-26 41-58 35Z" fill="#30401F"/>
+  <path d="M122 87c23 14 43 31 59 52-32-5-52-21-59-52Z" fill="#ABB36C"/>
+  <path d="M61 109c49-14 83-45 109-90" stroke="#98752F" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="98" cy="86" r="8" fill="#172214"/>
+  <circle cx="126" cy="65" r="7" fill="#172214"/>
+  <circle cx="79" cy="100" r="6" fill="#172214"/>
+  <path d="M208 49h222" stroke="#C8A85A" stroke-width="1.5"/>
+  <text x="207" y="91" fill="#172214" font-family="Georgia, serif" font-size="40" letter-spacing="4">GREEK OLIVE</text>
+  <text x="210" y="124" fill="#68753C" font-family="Georgia, serif" font-size="23" letter-spacing="8">FUSION</text>
+</svg>

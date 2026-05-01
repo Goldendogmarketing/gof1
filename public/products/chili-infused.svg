@@ -1,0 +1,11 @@
+<svg width="900" height="1100" viewBox="0 0 900 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1100" fill="#FBF7ED"/>
+  <circle cx="450" cy="530" r="320" fill="#E6C5AB"/>
+  <path d="M392 209h116l23 91v505c0 68-49 113-81 113s-81-45-81-113V300l23-91Z" fill="#172214"/>
+  <path d="M411 198h78v88h-78z" fill="#30401F"/>
+  <rect x="359" y="474" width="182" height="220" rx="8" fill="#FFFDF5"/>
+  <text x="450" y="551" text-anchor="middle" fill="#172214" font-family="Georgia,serif" font-size="38">CHILI</text>
+  <text x="450" y="594" text-anchor="middle" fill="#AA5E38" font-family="Georgia,serif" font-size="24">INFUSED OIL</text>
+  <path d="M628 695c82 42 62 146-50 179 33-43 17-97-40-131 34-47 65-63 90-48Z" fill="#AA3D27"/>
+  <path d="M631 699c-8-36 11-61 48-76" stroke="#68753C" stroke-width="11" stroke-linecap="round"/>
+</svg>
