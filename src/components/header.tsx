@@ -41,7 +41,7 @@ export function Header() {
       <div className="container flex h-20 items-center justify-between gap-5">
         <Link href="/" className="flex items-center gap-3" aria-label="Greek Olive Fusion home">
           <Image
-            src="/brand/greek-olive-fusion-logo.svg"
+            src="/brand/greek-olive-fusion-logo.png"
             alt="Greek Olive Fusion"
             width={208}
             height={64}

@@ -15,7 +15,7 @@ export function Footer() {
     <footer className="border-t border-olive-900/10 bg-olive-900 text-cream">
       <div className="container grid gap-12 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="max-w-md space-y-5">
-          <Image src="/brand/greek-olive-fusion-logo.svg" alt="Greek Olive Fusion" width={224} height={69} />
+          <Image src="/brand/greek-olive-fusion-logo.png" alt="Greek Olive Fusion" width={224} height={69} />
           <p className="text-sm leading-7 text-cream/75">
             Premium Greek extra virgin and infused olive oils built around aroma, texture, quality, and the ritual
             of a generous Mediterranean table.

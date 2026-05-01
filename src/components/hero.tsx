@@ -42,7 +42,7 @@ export function Hero() {
       <div className="container relative z-10 grid min-h-screen content-center pt-24">
         <motion.div style={{ y: copyY, opacity }} className="max-w-3xl space-y-8">
           <Image
-            src="/brand/greek-olive-fusion-logo.svg"
+            src="/brand/greek-olive-fusion-logo.png"
             alt="Greek Olive Fusion"
             width={280}
             height={86}
