@@ -29,19 +29,6 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
         }
       });
 
-      gsap.fromTo(
-        ".journey-orbit",
-        { rotate: -14 },
-        {
-          rotate: 18,
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.6
-          }
-        }
-      );
     }, rootRef);
 
     return () => context.revert();
@@ -49,17 +36,59 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
 
   return (
     <section ref={rootRef} className={cn("relative bg-olive-900 text-cream", compact ? "py-16" : "md:min-h-[460vh]")}>
-      <div className={cn("journey-pin overflow-hidden", compact ? "" : "md:h-screen")}>
-        <div className="container grid min-h-screen items-center gap-10 py-20 md:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-8">
+      <div className={cn("journey-pin relative overflow-hidden", compact ? "" : "md:h-screen")}>
+        <div className="absolute inset-0">
+          {scenes.map((scene, index) => {
+            const src = scene.imageUrl ?? "/journey/groves.svg";
+            const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+            const layerClass = cn(
+              "absolute inset-0 h-full w-full object-cover transition duration-700",
+              index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
+            );
+            return isVideo ? (
+              <video
+                key={scene.id}
+                src={src}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                aria-label={scene.title}
+                className={layerClass}
+              />
+            ) : (
+              <Image
+                key={scene.id}
+                src={src}
+                alt={scene.title}
+                fill
+                sizes="100vw"
+                className={cn(
+                  "object-cover transition duration-700",
+                  index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
+                )}
+              />
+            );
+          })}
+          <div className="absolute inset-0 bg-gradient-to-r from-olive-900/85 via-olive-900/55 to-olive-900/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-olive-900/70 via-transparent to-transparent" />
+        </div>
+
+        <div className="container relative z-10 grid min-h-screen items-center py-20">
+          <div className="max-w-xl space-y-8">
             <p className="text-sm font-semibold uppercase text-gold-400">Olive Journey</p>
             <div className="space-y-5">
-              <span className="font-greek text-7xl text-gold-400/45">{scenes[active]?.stepLabel}</span>
-              <p className="text-sm font-semibold uppercase text-cream/55">{scenes[active]?.eyebrow}</p>
-              <h2 className="font-display text-4xl leading-tight text-balance sm:text-5xl lg:text-6xl">
+              <span className="font-greek text-7xl text-gold-400/60 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+                {scenes[active]?.stepLabel}
+              </span>
+              <p className="text-sm font-semibold uppercase text-cream/70">{scenes[active]?.eyebrow}</p>
+              <h2 className="font-display text-4xl leading-tight text-balance drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] sm:text-5xl lg:text-6xl">
                 {scenes[active]?.title}
               </h2>
-              <p className="max-w-xl text-base leading-8 text-cream/75">{scenes[active]?.body}</p>
+              <p className="max-w-xl text-base leading-8 text-cream/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
+                {scenes[active]?.body}
+              </p>
             </div>
             <div className="hidden gap-2 md:flex">
               {scenes.map((scene, index) => (
@@ -67,51 +96,12 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
                   key={scene.id}
                   className={cn(
                     "h-1.5 rounded-full transition-all",
-                    index === active ? "w-12 bg-gold-400" : "w-5 bg-cream/20"
+                    index === active ? "w-12 bg-gold-400" : "w-5 bg-cream/30"
                   )}
                   aria-label={`Show journey scene ${scene.stepLabel}`}
                   onClick={() => setActive(index)}
                 />
               ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="journey-orbit absolute -inset-10 rounded-full border border-gold-400/20" />
-            <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-cream/10 shadow-glow">
-              {scenes.map((scene, index) => {
-                const src = scene.imageUrl ?? "/journey/groves.svg";
-                const isVideo = /\.(mp4|webm|mov)$/i.test(src);
-                const className = cn(
-                  "absolute inset-0 h-full w-full object-cover transition duration-700",
-                  index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
-                );
-                return isVideo ? (
-                  <video
-                    key={scene.id}
-                    src={src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                    aria-label={scene.title}
-                    className={className}
-                  />
-                ) : (
-                  <Image
-                    key={scene.id}
-                    src={src}
-                    alt={scene.title}
-                    fill
-                    sizes="(min-width: 768px) 52vw, 100vw"
-                    className={cn(
-                      "object-cover transition duration-700",
-                      index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
-                    )}
-                  />
-                );
-              })}
             </div>
           </div>
         </div>
