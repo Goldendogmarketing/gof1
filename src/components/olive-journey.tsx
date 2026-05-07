@@ -79,19 +79,39 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
           <div className="relative">
             <div className="journey-orbit absolute -inset-10 rounded-full border border-gold-400/20" />
             <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-cream/10 shadow-glow">
-              {scenes.map((scene, index) => (
-                <Image
-                  key={scene.id}
-                  src={scene.imageUrl ?? "/journey/groves.svg"}
-                  alt={scene.title}
-                  fill
-                  sizes="(min-width: 768px) 52vw, 100vw"
-                  className={cn(
-                    "object-cover transition duration-700",
-                    index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
-                  )}
-                />
-              ))}
+              {scenes.map((scene, index) => {
+                const src = scene.imageUrl ?? "/journey/groves.svg";
+                const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+                const className = cn(
+                  "absolute inset-0 h-full w-full object-cover transition duration-700",
+                  index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
+                );
+                return isVideo ? (
+                  <video
+                    key={scene.id}
+                    src={src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    aria-label={scene.title}
+                    className={className}
+                  />
+                ) : (
+                  <Image
+                    key={scene.id}
+                    src={src}
+                    alt={scene.title}
+                    fill
+                    sizes="(min-width: 768px) 52vw, 100vw"
+                    className={cn(
+                      "object-cover transition duration-700",
+                      index === active ? "scale-100 opacity-100" : "scale-105 opacity-0"
+                    )}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

@@ -19,7 +19,11 @@ export default async function AdminContentPage() {
           {scenes.map((scene) => (
             <article key={scene.id} className="grid gap-4 rounded-sm border border-olive-900/10 bg-cream p-4">
               <div className="relative aspect-[16/9] overflow-hidden rounded-sm bg-white">
-                <Image src={scene.imageUrl ?? "/journey/groves.svg"} alt={scene.title} fill className="object-cover" sizes="420px" />
+                {/\.(mp4|webm|mov)$/i.test(scene.imageUrl ?? "") ? (
+                  <video src={scene.imageUrl ?? undefined} muted loop autoPlay playsInline className="absolute inset-0 h-full w-full object-cover" />
+                ) : (
+                  <Image src={scene.imageUrl ?? "/journey/groves.svg"} alt={scene.title} fill className="object-cover" sizes="420px" />
+                )}
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase text-gold-600">{scene.stepLabel} · {scene.eyebrow}</p>

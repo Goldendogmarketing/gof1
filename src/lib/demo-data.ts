@@ -198,7 +198,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Groves shaped by sea air and limestone light",
     body:
       "Koroneiki olives begin in sun-warmed Greek groves where dry breezes, mineral soil, and careful pruning build the fruit's peppery character.",
-    imageUrl: "/journey/groves.svg",
+    imageUrl: "/journey/groves.mp4",
     accentColor: "#c8a85a"
   },
   {
