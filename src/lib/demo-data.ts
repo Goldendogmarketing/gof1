@@ -213,17 +213,6 @@ export const demoJourneyScenes: JourneySceneView[] = [
     accentColor: "#68753c"
   },
   {
-    id: "scene-harvest",
-    slug: "family-harvest",
-    stepLabel: "03",
-    eyebrow: "Harvest",
-    title: "Four generations of hand-guided timing",
-    body:
-      "The best harvest window is measured in hours, not weeks. Fruit is gathered with respect for traditional methods and moved quickly to preserve aroma.",
-    imageUrl: "/journey/harvest.svg",
-    accentColor: "#aa5e38"
-  },
-  {
     id: "scene-press",
     slug: "cold-press",
     stepLabel: "04",
@@ -231,7 +220,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Crushed without chemical refining",
     body:
       "Extra virgin oil is extracted by crushing olives and separating the oil without chemical refining, protecting texture, taste, and fragrance.",
-    imageUrl: "/journey/press.svg",
+    imageUrl: "/journey/press.mp4",
     accentColor: "#30401f"
   },
   {
