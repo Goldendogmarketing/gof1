@@ -209,7 +209,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Small olives, concentrated aroma",
     body:
       "Koroneiki fruit is compact and intensely aromatic, prized for green almond notes, grassy freshness, and a clean, lingering finish.",
-    imageUrl: "/journey/olives.svg",
+    imageUrl: "/journey/olives.mp4",
     accentColor: "#68753c"
   },
   {

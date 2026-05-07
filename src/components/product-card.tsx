@@ -16,42 +16,44 @@ export function ProductCard({ product, priority = false }: { product: StoreProdu
 
   return (
     <article className="group grid h-full overflow-hidden rounded-md border border-olive-900/10 bg-white/65 shadow-soft backdrop-blur">
-      <Link href={`/shop/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-cream">
+      <Link href={`/shop/${product.slug}`} className="relative block aspect-square overflow-hidden bg-cream">
         <Image
           src={product.image}
           alt={product.images[0]?.alt ?? product.title}
           fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 50vw"
           priority={priority}
           className="object-cover transition duration-700 group-hover:scale-105"
         />
         {product.compareAtCents ? (
-          <Badge className="absolute left-4 top-4 border-gold-400/40 bg-parchment text-gold-600">Sale</Badge>
+          <Badge className="absolute left-3 top-3 border-gold-400/40 bg-parchment text-[10px] text-gold-600">Sale</Badge>
         ) : null}
       </Link>
 
-      <div className="grid gap-4 p-5">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase text-olive-700/75">
+      <div className="grid gap-3 p-3 sm:p-4">
+        <div className="space-y-1.5">
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-olive-700/75">
             <span>{product.category}</span>
+            <span className="px-1 text-olive-700/40">·</span>
             <span>{product.size}</span>
           </div>
           <Link href={`/shop/${product.slug}`} className="block">
-            <h3 className="font-display text-2xl text-ink transition group-hover:text-olive-700">{product.title}</h3>
+            <h3 className="line-clamp-2 font-display text-base leading-snug text-ink transition group-hover:text-olive-700 sm:text-lg">
+              {product.title}
+            </h3>
           </Link>
-          <p className="min-h-12 text-sm leading-6 text-ink/68">{product.shortDescription}</p>
         </div>
 
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex items-center justify-between gap-2">
           <div className="leading-none">
-            <span className="font-display text-2xl text-olive-900">{formatMoney(product.priceCents, product.currency)}</span>
+            <span className="font-display text-lg text-olive-900">{formatMoney(product.priceCents, product.currency)}</span>
             {product.compareAtCents ? (
-              <span className="ml-2 text-sm text-ink/45 line-through">
+              <span className="ml-1.5 text-xs text-ink/45 line-through">
                 {formatMoney(product.compareAtCents, product.currency)}
               </span>
             ) : null}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <Button
               type="button"
               size="sm"
@@ -59,8 +61,9 @@ export function ProductCard({ product, priority = false }: { product: StoreProdu
               onClick={() => setQuickViewOpen(true)}
               aria-label={`Quick view ${product.title}`}
               title="Quick view"
+              className="h-8 min-h-8 w-8 p-0"
             >
-              <Eye className="size-4" />
+              <Eye className="size-3.5" />
             </Button>
             <Button
               type="button"
@@ -68,8 +71,9 @@ export function ProductCard({ product, priority = false }: { product: StoreProdu
               onClick={() => addItem(product)}
               aria-label={`Add ${product.title} to cart`}
               title="Add to cart"
+              className="h-8 min-h-8 w-8 p-0"
             >
-              <Plus className="size-4" />
+              <Plus className="size-3.5" />
             </Button>
           </div>
         </div>

@@ -11,8 +11,8 @@ export default async function HomePage() {
   return (
     <main>
       <Hero />
-      <ProductCarousel products={featuredProducts} />
-      <OliveJourney scenes={journeyScenes} compact />
+      <ProductCarousel products={featuredProducts.slice(0, 4)} />
+      <OliveJourney scenes={journeyScenes} />
       <PairingsBand />
       <HeritageBand />
     </main>
