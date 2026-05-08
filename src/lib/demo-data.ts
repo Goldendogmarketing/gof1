@@ -253,7 +253,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Bread, salad, fish, pasta, and cheese",
     body:
       "Every bottle is made to finish real food: a ribbon over grilled fish, a pool for bread, a citrus lift for salad, or a herb note over pasta.",
-    imageUrl: "/journey/table.svg",
+    imageUrl: "/journey/table.mp4",
     accentColor: "#d7c6aa"
   }
 ];
