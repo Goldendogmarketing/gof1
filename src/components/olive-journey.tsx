@@ -36,7 +36,7 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
 
   return (
     <section ref={rootRef} className={cn("relative bg-olive-900 text-cream", compact ? "py-16" : "md:min-h-[460vh]")}>
-      <div className={cn("journey-pin relative overflow-hidden", compact ? "" : "md:h-screen")}>
+      <div className={cn("journey-pin relative hidden overflow-hidden md:block", compact ? "" : "md:h-screen")}>
         <div className="absolute inset-0">
           {scenes.map((scene, index) => {
             const src = scene.imageUrl ?? "/journey/groves.svg";
@@ -107,14 +107,51 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
         </div>
       </div>
 
-      <div className="container grid gap-4 pb-16 md:hidden">
-        {scenes.map((scene) => (
-          <article key={scene.id} className="rounded-md border border-white/10 bg-white/10 p-5">
-            <span className="font-greek text-3xl text-gold-400">{scene.stepLabel}</span>
-            <h3 className="mt-3 font-display text-3xl">{scene.title}</h3>
-            <p className="mt-3 text-sm leading-7 text-cream/75">{scene.body}</p>
-          </article>
-        ))}
+      <div className="md:hidden">
+        {scenes.map((scene) => {
+          const src = scene.imageUrl ?? "/journey/groves.svg";
+          const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+          return (
+            <article key={scene.id} className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden">
+              <div className="absolute inset-0">
+                {isVideo ? (
+                  <video
+                    src={src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    aria-label={scene.title}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={src}
+                    alt={scene.title}
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-olive-900 via-olive-900/70 to-olive-900/20" />
+              </div>
+              <div className="relative z-10 px-6 pb-12 pt-24">
+                <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-gold-400">Olive Journey</p>
+                <span className="font-greek text-6xl text-gold-400/70 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
+                  {scene.stepLabel}
+                </span>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-cream/70">{scene.eyebrow}</p>
+                <h3 className="mt-3 font-display text-3xl leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)]">
+                  {scene.title}
+                </h3>
+                <p className="mt-4 text-sm leading-7 text-cream/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
+                  {scene.body}
+                </p>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

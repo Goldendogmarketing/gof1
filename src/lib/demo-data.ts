@@ -231,7 +231,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Herbs, citrus, garlic, basil, rosemary, and chili",
     body:
       "Infusions are blended for balance: vivid enough to transform a dish, restrained enough to let the olive oil remain the center.",
-    imageUrl: "/journey/infusion.svg",
+    imageUrl: "/journey/infusion.mp4",
     accentColor: "#98752f"
   },
   {
