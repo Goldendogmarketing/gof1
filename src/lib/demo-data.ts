@@ -242,7 +242,7 @@ export const demoJourneyScenes: JourneySceneView[] = [
     title: "Protected from light, labeled with restraint",
     body:
       "Dark glass, clean labels, and small-batch control preserve the oil from press to pantry while keeping the shelf presence quiet and premium.",
-    imageUrl: "/journey/bottle.svg",
+    imageUrl: "/journey/bottle.mp4",
     accentColor: "#172214"
   },
   {
