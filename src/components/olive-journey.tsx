@@ -79,9 +79,6 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
           <div className="max-w-xl space-y-8">
             <p className="text-sm font-semibold uppercase text-gold-400">Olive Journey</p>
             <div className="space-y-5">
-              <span className="font-greek text-7xl text-gold-400/60 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
-                {scenes[active]?.stepLabel}
-              </span>
               <p className="text-sm font-semibold uppercase text-cream/70">{scenes[active]?.eyebrow}</p>
               <h2 className="font-display text-4xl leading-tight text-balance drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] sm:text-5xl lg:text-6xl">
                 {scenes[active]?.title}
@@ -138,10 +135,7 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
               </div>
               <div className="relative z-10 px-6 pb-12 pt-24">
                 <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-gold-400">Olive Journey</p>
-                <span className="font-greek text-6xl text-gold-400/70 drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]">
-                  {scene.stepLabel}
-                </span>
-                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-cream/70">{scene.eyebrow}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-cream/70">{scene.eyebrow}</p>
                 <h3 className="mt-3 font-display text-3xl leading-tight drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)]">
                   {scene.title}
                 </h3>
