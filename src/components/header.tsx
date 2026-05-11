@@ -31,10 +31,10 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 transition duration-500",
+        "fixed left-0 right-0 top-0 z-50 backdrop-blur-md transition duration-500",
         solid || open
           ? "border-b border-olive-700/10 bg-parchment/92 shadow-sm backdrop-blur-xl"
-          : "bg-transparent"
+          : "border-b border-white/10 bg-parchment/55 shadow-sm"
       )}
     >
       <div className="container flex h-20 items-center justify-between gap-5">

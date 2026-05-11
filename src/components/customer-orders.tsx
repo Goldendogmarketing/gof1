@@ -22,7 +22,11 @@ export async function CustomerOrders({ email }: { email: string }) {
       take: 20,
       include: { items: true }
     })
-    .catch(() => [] as Awaited<ReturnType<typeof prisma.order.findMany>>);
+    .catch(() => null);
+
+  if (!orders) {
+    return <EmptyState message="Order history is temporarily unavailable. Please try again in a moment." />;
+  }
 
   if (orders.length === 0) {
     return (
