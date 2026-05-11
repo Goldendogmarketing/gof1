@@ -35,7 +35,14 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
   }, [compact, scenes.length]);
 
   return (
-    <section ref={rootRef} className={cn("relative bg-olive-900 text-cream", compact ? "py-16" : "md:min-h-[460vh]")}>
+    <section
+      ref={rootRef}
+      id="olive-journey"
+      className={cn(
+        "relative scroll-mt-20 bg-olive-900 text-cream",
+        compact ? "py-16" : "md:min-h-[460vh]"
+      )}
+    >
       <div className={cn("journey-pin relative hidden overflow-hidden md:block", compact ? "" : "md:h-screen")}>
         <div className="absolute inset-0">
           {scenes.map((scene, index) => {

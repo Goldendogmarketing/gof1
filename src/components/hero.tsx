@@ -67,7 +67,7 @@ export function Hero() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/olive-journey">
+              <Link href="/#olive-journey">
                 <ArrowDown className="size-5" />
                 Explore the Journey
               </Link>

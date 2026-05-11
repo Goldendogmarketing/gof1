@@ -10,10 +10,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/shop", label: "Shop" },
-  { href: "/olive-journey", label: "Olive Journey" },
+  { href: "/#olive-journey", label: "Olive Journey" },
   { href: "/pairings", label: "Pairings" },
   { href: "/about", label: "About" },
-  { href: "/wholesale", label: "Wholesale" },
   { href: "/contact", label: "Contact" }
 ];
 
