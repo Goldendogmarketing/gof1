@@ -62,10 +62,10 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild variant="ghost" size="sm" aria-label="Account and admin">
+          <Button asChild variant="ghost" size="sm" aria-label="Account">
             <Link href="/account">
               <UserRound className="size-4" />
-              Account/Admin
+              Account
             </Link>
           </Button>
           <Button asChild variant="secondary" size="sm" aria-label={`Cart with ${itemCount} items`}>

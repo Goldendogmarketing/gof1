@@ -1,14 +1,12 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { LogIn, LogOut, ShieldCheck } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function AccountPanel({ next = "/admin" }: { next?: string }) {
-  const { data: session, status } = useSession();
+export function AccountPanel({ next = "/account" }: { next?: string }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
@@ -30,25 +28,6 @@ export function AccountPanel({ next = "/admin" }: { next?: string }) {
     }
 
     window.location.href = result?.url ?? next;
-  }
-
-  if (status === "authenticated") {
-    return (
-      <section className="rounded-md border border-olive-900/10 bg-white/60 p-6 shadow-soft">
-        <ShieldCheck className="mb-4 size-9 text-olive-700" />
-        <h2 className="font-display text-3xl text-ink">Signed in</h2>
-        <p className="mt-2 text-sm text-ink/65">{session.user?.email}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild>
-            <Link href="/admin">Open Admin</Link>
-          </Button>
-          <Button variant="secondary" onClick={() => signOut()}>
-            <LogOut className="size-4" />
-            Sign out
-          </Button>
-        </div>
-      </section>
-    );
   }
 
   return (

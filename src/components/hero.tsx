@@ -47,7 +47,7 @@ export function Hero() {
             width={280}
             height={86}
             priority
-            className="w-56 bg-parchment/90 p-2 shadow-glow sm:w-72"
+            className="w-56 sm:w-72"
           />
           <div className="space-y-5">
             <p className="text-sm font-semibold uppercase text-gold-400">Greek groves. Modern infusions. One table.</p>
