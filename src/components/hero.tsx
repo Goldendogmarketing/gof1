@@ -28,18 +28,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-t from-olive-900 via-transparent to-olive-900/20" />
       <div className="grain-overlay absolute inset-0 opacity-25" />
 
-      <motion.div
-        className="pointer-events-none absolute left-[8%] top-[22%] hidden h-24 w-12 rounded-[100%] bg-olive-300/35 blur-[1px] md:block"
-        animate={{ y: [0, -18, 0], rotate: [-16, 8, -16] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="pointer-events-none absolute bottom-[24%] right-[18%] hidden h-20 w-10 rounded-[100%] bg-gold-400/25 blur-[1px] md:block"
-        animate={{ y: [0, 20, 0], rotate: [20, -12, 20] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      <div className="container relative z-10 grid min-h-screen content-center pt-24">
+<div className="container relative z-10 grid min-h-screen content-center pt-24">
         <motion.div style={{ y: copyY, opacity }} className="max-w-3xl space-y-8">
           <Image
             src="/brand/greek-olive-fusion-logo.png"
