@@ -8,13 +8,18 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart-provider";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+const leftNavItems = [
   { href: "/shop", label: "Shop" },
   { href: "/#olive-journey", label: "Olive Journey" },
-  { href: "/pairings", label: "Pairings" },
+  { href: "/pairings", label: "Pairings" }
+];
+
+const rightNavItems = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" }
 ];
+
+const navItems = [...leftNavItems, ...rightNavItems];
 
 export function Header() {
   const [solid, setSolid] = React.useState(false);
@@ -37,8 +42,8 @@ export function Header() {
           : "border-b border-white/10 bg-parchment/55 shadow-sm"
       )}
     >
-      <div className="container flex h-20 items-center justify-between gap-5">
-        <Link href="/" className="flex items-center gap-3" aria-label="Greek Olive Fusion home">
+      <div className="container flex h-20 items-center justify-between gap-5 lg:hidden">
+        <Link href="/" className="flex items-center" aria-label="Greek Olive Fusion home">
           <Image
             src="/brand/greek-olive-fusion-logo.png"
             alt="Greek Olive Fusion"
@@ -48,9 +53,19 @@ export function Header() {
             className="h-12 w-auto"
           />
         </Link>
+        <button
+          className="inline-flex size-11 items-center justify-center rounded-sm border border-olive-700/15 bg-white/55 text-olive-900"
+          onClick={() => setOpen((value) => !value)}
+          aria-label="Toggle menu"
+          aria-expanded={open}
+        >
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary navigation">
-          {navItems.map((item) => (
+      <div className="container hidden h-24 items-center gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <nav className="flex items-center justify-end gap-7" aria-label="Primary navigation left">
+          {leftNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -61,34 +76,53 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild variant="ghost" size="sm" aria-label="Account">
-            <Link href="/account">
-              <UserRound className="size-4" />
-              Account
-            </Link>
-          </Button>
-          <Button asChild variant="secondary" size="sm" aria-label={`Cart with ${itemCount} items`}>
-            <Link href="/cart" className="relative">
-              <ShoppingBag className="size-4" />
-              Cart
-              {itemCount > 0 ? (
-                <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-gold-400 text-[11px] text-ink">
-                  {itemCount}
-                </span>
-              ) : null}
-            </Link>
-          </Button>
-        </div>
-
-        <button
-          className="inline-flex size-11 items-center justify-center rounded-sm border border-olive-700/15 bg-white/55 text-olive-900 lg:hidden"
-          onClick={() => setOpen((value) => !value)}
-          aria-label="Toggle menu"
-          aria-expanded={open}
+        <Link
+          href="/"
+          className="flex items-center justify-self-center"
+          aria-label="Greek Olive Fusion home"
         >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+          <Image
+            src="/brand/greek-olive-fusion-logo.png"
+            alt="Greek Olive Fusion"
+            width={320}
+            height={320}
+            priority
+            className="h-16 w-auto xl:h-20"
+          />
+        </Link>
+
+        <div className="flex items-center justify-between gap-5">
+          <nav className="flex items-center gap-7" aria-label="Primary navigation right">
+            {rightNavItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-semibold text-olive-900/85 transition hover:text-olive-700"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm" aria-label="Account">
+              <Link href="/account">
+                <UserRound className="size-4" />
+                Account
+              </Link>
+            </Button>
+            <Button asChild variant="secondary" size="sm" aria-label={`Cart with ${itemCount} items`}>
+              <Link href="/cart" className="relative">
+                <ShoppingBag className="size-4" />
+                Cart
+                {itemCount > 0 ? (
+                  <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-gold-400 text-[11px] text-ink">
+                    {itemCount}
+                  </span>
+                ) : null}
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
 
       {open ? (
