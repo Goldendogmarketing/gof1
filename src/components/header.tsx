@@ -38,8 +38,8 @@ export function Header() {
       className={cn(
         "fixed left-0 right-0 top-0 z-50 backdrop-blur-md transition duration-500",
         solid || open
-          ? "border-b border-olive-700/10 bg-stonewarm/85 shadow-sm backdrop-blur-xl"
-          : "border-b border-white/10 bg-stonewarm/55 shadow-sm"
+          ? "border-b border-cream/10 bg-olive-900/75 shadow-md backdrop-blur-xl"
+          : "border-b border-cream/15 bg-olive-900/40 shadow-md"
       )}
     >
       <div className="container flex h-20 items-center justify-between gap-5 lg:hidden">
@@ -63,13 +63,13 @@ export function Header() {
         </button>
       </div>
 
-      <div className="container hidden h-[220px] items-center gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-        <nav className="flex items-center justify-end gap-7" aria-label="Primary navigation left">
+      <div className="container hidden h-[135px] items-start gap-6 overflow-visible lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <nav className="flex h-[135px] items-center justify-end gap-8" aria-label="Primary navigation left">
           {leftNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-semibold text-olive-900/85 transition hover:text-olive-700"
+              className="text-base font-semibold uppercase tracking-wide text-cream drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)] transition hover:text-gold-400"
             >
               {item.label}
             </Link>
@@ -78,39 +78,44 @@ export function Header() {
 
         <Link
           href="/"
-          className="flex items-center justify-self-center"
+          className="flex items-start justify-self-center self-start"
           aria-label="Greek Olive Fusion home"
         >
           <Image
             src="/brand/greek-olive-fusion-logo.png"
             alt="Greek Olive Fusion"
-            width={200}
-            height={200}
+            width={135}
+            height={135}
             priority
-            className="h-[200px] w-[200px]"
+            className="h-[135px] w-[135px]"
           />
         </Link>
 
-        <div className="flex items-center justify-between gap-5">
-          <nav className="flex items-center gap-7" aria-label="Primary navigation right">
+        <div className="flex h-[135px] items-center justify-between gap-5">
+          <nav className="flex items-center gap-8" aria-label="Primary navigation right">
             {rightNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-semibold text-olive-900/85 transition hover:text-olive-700"
+                className="text-base font-semibold uppercase tracking-wide text-cream drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)] transition hover:text-gold-400"
               >
                 {item.label}
               </Link>
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" aria-label="Account">
+            <Button
+              asChild
+              variant="ghost"
+              aria-label="Account"
+              className="text-cream hover:bg-cream/10 hover:text-gold-400 drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]"
+            >
               <Link href="/account">
                 <UserRound className="size-4" />
                 Account
               </Link>
             </Button>
-            <Button asChild variant="secondary" size="sm" aria-label={`Cart with ${itemCount} items`}>
+            <Button asChild variant="secondary" aria-label={`Cart with ${itemCount} items`}>
               <Link href="/cart" className="relative">
                 <ShoppingBag className="size-4" />
                 Cart
