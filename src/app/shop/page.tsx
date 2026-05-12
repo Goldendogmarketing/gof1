@@ -11,7 +11,7 @@ export default async function ShopPage() {
   const [products, facets] = await Promise.all([getProducts(), getProductFacets()]);
 
   return (
-    <main className="min-h-screen pt-28">
+    <main className="min-h-screen pt-28 lg:pt-[240px]">
       <section className="container py-10">
         <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Shop</p>
         <h1 className="max-w-3xl font-display text-5xl leading-tight text-ink sm:text-6xl">

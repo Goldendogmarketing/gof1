@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: PageProps) {
   if (!product) notFound();
 
   return (
-    <main className="min-h-screen pt-28">
+    <main className="min-h-screen pt-28 lg:pt-[240px]">
       <div className="container py-8">
         <Button asChild variant="ghost" className="mb-6">
           <Link href="/shop">

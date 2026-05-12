@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PairingsPage() {
   return (
-    <main className="min-h-screen pt-28">
+    <main className="min-h-screen pt-28 lg:pt-[240px]">
       <section className="container py-12">
         <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Pairings</p>
         <h1 className="max-w-4xl font-display text-5xl leading-tight text-ink sm:text-6xl">

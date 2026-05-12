@@ -16,14 +16,14 @@ export function ProductCard({ product, priority = false }: { product: StoreProdu
 
   return (
     <article className="group grid h-full overflow-hidden rounded-md border border-olive-900/10 bg-white/65 shadow-soft backdrop-blur">
-      <Link href={`/shop/${product.slug}`} className="relative block aspect-square overflow-hidden bg-cream">
+      <Link href={`/shop/${product.slug}`} className="relative block aspect-[3/4] overflow-hidden bg-cream sm:aspect-[4/5]">
         <Image
           src={product.image}
           alt={product.images[0]?.alt ?? product.title}
           fill
           sizes="(min-width: 1024px) 22vw, (min-width: 640px) 33vw, 50vw"
           priority={priority}
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="object-contain p-3 transition duration-700 group-hover:scale-105"
         />
         {product.compareAtCents ? (
           <Badge className="absolute left-3 top-3 border-gold-400/40 bg-parchment text-[10px] text-gold-600">Sale</Badge>

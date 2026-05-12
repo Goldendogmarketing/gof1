@@ -38,8 +38,8 @@ export function Header() {
       className={cn(
         "fixed left-0 right-0 top-0 z-50 backdrop-blur-md transition duration-500",
         solid || open
-          ? "border-b border-olive-700/10 bg-parchment/92 shadow-sm backdrop-blur-xl"
-          : "border-b border-white/10 bg-parchment/55 shadow-sm"
+          ? "border-b border-olive-700/10 bg-stonewarm/85 shadow-sm backdrop-blur-xl"
+          : "border-b border-white/10 bg-stonewarm/55 shadow-sm"
       )}
     >
       <div className="container flex h-20 items-center justify-between gap-5 lg:hidden">
@@ -63,7 +63,7 @@ export function Header() {
         </button>
       </div>
 
-      <div className="container hidden h-24 items-center gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+      <div className="container hidden h-[220px] items-center gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <nav className="flex items-center justify-end gap-7" aria-label="Primary navigation left">
           {leftNavItems.map((item) => (
             <Link
@@ -84,10 +84,10 @@ export function Header() {
           <Image
             src="/brand/greek-olive-fusion-logo.png"
             alt="Greek Olive Fusion"
-            width={320}
-            height={320}
+            width={200}
+            height={200}
             priority
-            className="h-16 w-auto xl:h-20"
+            className="h-[200px] w-[200px]"
           />
         </Link>
 

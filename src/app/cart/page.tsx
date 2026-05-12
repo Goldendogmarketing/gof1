@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Cart() {
   return (
-    <main className="min-h-screen pt-28">
+    <main className="min-h-screen pt-28 lg:pt-[240px]">
       <section className="container py-8">
         <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Cart</p>
         <h1 className="font-display text-5xl text-ink sm:text-6xl">Your Mediterranean basket</h1>

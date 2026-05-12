@@ -10,7 +10,7 @@ export default async function OrderConfirmationPage({
   const params = await searchParams;
 
   return (
-    <main className="grid min-h-screen place-items-center px-5 pt-28">
+    <main className="grid min-h-screen place-items-center px-5 pt-28 lg:pt-[240px]">
       <section className="max-w-2xl rounded-md border border-olive-900/10 bg-white/60 p-8 text-center shadow-soft">
         <CheckCircle2 className="mx-auto mb-5 size-12 text-olive-700" />
         <p className="mb-3 text-sm font-semibold uppercase text-gold-600">Order confirmation</p>

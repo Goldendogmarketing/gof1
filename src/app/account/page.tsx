@@ -22,7 +22,7 @@ export default async function AccountPage({
 
   if (!session) {
     return (
-      <main className="min-h-screen pt-28">
+      <main className="min-h-screen pt-28 lg:pt-[240px]">
         <div className="container grid gap-8 py-12 lg:grid-cols-[0.9fr_420px]">
           <section>
             <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Account</p>
@@ -44,7 +44,7 @@ export default async function AccountPage({
   const firstName = session.user?.name?.split(" ")[0];
 
   return (
-    <main className="min-h-screen pt-28">
+    <main className="min-h-screen pt-28 lg:pt-[240px]">
       <div className="container py-12">
         <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Account</p>
         <h1 className="font-display text-5xl leading-tight text-ink sm:text-6xl">
