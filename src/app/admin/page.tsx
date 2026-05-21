@@ -52,7 +52,10 @@ export default async function AdminDashboardPage() {
         </CardHeader>
         <CardContent className="grid gap-3 text-sm text-ink/70 md:grid-cols-2">
           <p>Database: {dbReady ? "connected" : "demo fallback"}</p>
-          <p>Stripe: {process.env.STRIPE_SECRET_KEY ? "configured" : "pending"}</p>
+          <p>
+            Square: {process.env.SQUARE_ACCESS_TOKEN && process.env.SQUARE_LOCATION_ID ? "configured" : "pending"}
+            {process.env.SQUARE_ENVIRONMENT ? ` (${process.env.SQUARE_ENVIRONMENT})` : ""}
+          </p>
           <p>Resend: {process.env.RESEND_API_KEY ? "configured" : "pending"}</p>
           <p>Product feed: {process.env.PRODUCT_FEED_URL ? "external feed" : "demo adapter"}</p>
         </CardContent>

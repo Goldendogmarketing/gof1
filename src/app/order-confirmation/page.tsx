@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export default async function OrderConfirmationPage({
   searchParams
 }: {
-  searchParams: Promise<{ session_id?: string; demo?: string }>;
+  searchParams: Promise<{ orderNumber?: string; orderId?: string; transactionId?: string; demo?: string }>;
 }) {
   const params = await searchParams;
 
@@ -17,10 +17,15 @@ export default async function OrderConfirmationPage({
         <h1 className="font-display text-5xl text-ink">Thank you for your order.</h1>
         <p className="mt-5 leading-8 text-ink/68">
           {params.demo
-            ? "Demo checkout is enabled because Stripe keys are not configured yet."
-            : "Your payment session is complete and the order will be reconciled by the Stripe webhook."}
+            ? "Demo checkout is enabled because payments are not yet configured."
+            : "Your payment has been received. We&rsquo;ll send a confirmation email shortly and reach out with shipping details."}
         </p>
-        {params.session_id ? <p className="mt-4 text-xs text-ink/45">Session: {params.session_id}</p> : null}
+        {params.orderNumber ? (
+          <p className="mt-4 text-sm text-ink/55">Order number: <span className="font-semibold text-ink">{params.orderNumber}</span></p>
+        ) : null}
+        {params.transactionId ? (
+          <p className="mt-1 text-xs text-ink/45">Square transaction: {params.transactionId}</p>
+        ) : null}
         <Button asChild className="mt-7">
           <Link href="/shop">Continue shopping</Link>
         </Button>

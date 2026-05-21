@@ -1,10 +1,10 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { checkoutSchema } from "@/lib/validations";
 import { getProducts } from "@/lib/products";
-import { getStripe } from "@/lib/stripe";
-import { formatMoney, orderNumber } from "@/lib/format";
+import { getSquareClient, getSquareLocationId } from "@/lib/square";
+import { orderNumber } from "@/lib/format";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
-import { sendOrderEmail } from "@/lib/email";
 
 function absoluteUrl(path: string) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -38,109 +38,128 @@ export async function POST(request: Request) {
   const subtotalCents = validLines.reduce((total, line) => total + line.product.priceCents * line.quantity, 0);
   const hasDemoDiscount = discountCode?.toUpperCase() === "TABLE10" && subtotalCents >= 5000;
   const discountCents = hasDemoDiscount ? Math.round(subtotalCents * 0.1) : 0;
-  const stripe = getStripe();
+  const shippingCents = subtotalCents > 7500 ? 0 : 900;
 
-  if (!stripe) {
-    const number = orderNumber();
-    const shippingCents = subtotalCents > 7500 ? 0 : 900;
-    const taxCents = Math.round((subtotalCents - discountCents) * 0.07);
-    const totalCents = subtotalCents - discountCents + shippingCents + taxCents;
+  const square = getSquareClient();
+  const locationId = getSquareLocationId();
+  const number = orderNumber();
 
-    if (hasDatabaseUrl()) {
-      try {
-        const customer = await prisma.customer.upsert({
-          where: { email },
-          update: {},
-          create: { email }
-        });
+  let dbOrderId: string | null = null;
+  if (hasDatabaseUrl()) {
+    try {
+      const customer = await prisma.customer.upsert({
+        where: { email },
+        update: {},
+        create: { email }
+      });
 
-        await prisma.order.create({
-          data: {
-            orderNumber: number,
-            email,
-            customerId: customer.id,
-            status: "PENDING",
-            subtotalCents,
-            discountCents,
-            shippingCents,
-            taxCents,
-            totalCents,
-            items: {
-              create: validLines.map((line) => ({
-                productId: line.product.id,
-                title: line.product.title,
-                quantity: line.quantity,
-                unitPriceCents: line.product.priceCents,
-                totalCents: line.product.priceCents * line.quantity
-              }))
-            }
+      const order = await prisma.order.create({
+        data: {
+          orderNumber: number,
+          email,
+          customerId: customer.id,
+          status: "PENDING",
+          subtotalCents,
+          discountCents,
+          shippingCents,
+          taxCents: 0,
+          totalCents: subtotalCents - discountCents + shippingCents,
+          items: {
+            create: validLines.map((line) => ({
+              productId: line.product.id,
+              title: line.product.title,
+              quantity: line.quantity,
+              unitPriceCents: line.product.priceCents,
+              totalCents: line.product.priceCents * line.quantity
+            }))
           }
-        });
-      } catch (error) {
-        console.warn("Could not persist demo order:", error);
-      }
+        }
+      });
+      dbOrderId = order.id;
+    } catch (error) {
+      console.warn("Could not persist order before payment:", error);
     }
+  }
 
-    await sendOrderEmail({ to: email, orderNumber: number, total: formatMoney(totalCents) });
+  if (!square || !locationId) {
+    return NextResponse.json(
+      { error: "Payments are not yet configured. Please call (772) 528-5208 to place an order." },
+      { status: 503 }
+    );
+  }
 
-    return NextResponse.json({
-      url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/order-confirmation?demo=1`
+  const lineItems = validLines.map((line) => ({
+    name: line.product.title,
+    quantity: String(line.quantity),
+    basePriceMoney: {
+      amount: BigInt(line.product.priceCents),
+      currency: "USD" as const
+    },
+    note: line.product.shortDescription?.slice(0, 200) || undefined
+  }));
+
+  if (discountCents > 0) {
+    lineItems.push({
+      name: `Discount (${discountCode?.toUpperCase()})`,
+      quantity: "1",
+      basePriceMoney: { amount: BigInt(-discountCents), currency: "USD" },
+      note: undefined
     });
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    customer_email: email,
-    allow_promotion_codes: true,
-    automatic_tax: { enabled: true },
-    shipping_address_collection: { allowed_countries: ["US", "CA"] },
-    shipping_options:
-      subtotalCents > 7500
-        ? [
-            {
-              shipping_rate_data: {
-                type: "fixed_amount",
-                fixed_amount: { amount: 0, currency: "usd" },
-                display_name: "Bundle shipping over $75"
-              }
-            }
-          ]
-        : [
-            {
-              shipping_rate_data: {
-                type: "fixed_amount",
-                fixed_amount: { amount: 900, currency: "usd" },
-                display_name: "Ground shipping",
-                delivery_estimate: {
-                  minimum: { unit: "business_day", value: 3 },
-                  maximum: { unit: "business_day", value: 7 }
-                }
-              }
-            }
-          ],
-    line_items: validLines.map((line) => ({
-      quantity: line.quantity,
-      price_data: {
-        currency: line.product.currency.toLowerCase(),
-        unit_amount: line.product.priceCents,
-        product_data: {
-          name: line.product.title,
-          description: line.product.shortDescription,
-          images: [absoluteUrl(line.product.image)],
-          metadata: {
-            productId: line.product.id,
-            slug: line.product.slug
-          }
-        }
-      }
-    })),
-    metadata: {
-      discountCode: discountCode ?? "",
-      source: "greek-olive-fusion"
-    },
-    success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/cart`
-  });
+  if (shippingCents > 0) {
+    lineItems.push({
+      name: "Ground shipping (3-7 business days)",
+      quantity: "1",
+      basePriceMoney: { amount: BigInt(shippingCents), currency: "USD" },
+      note: undefined
+    });
+  }
 
-  return NextResponse.json({ url: session.url });
+  try {
+    const redirectUrl = absoluteUrl(
+      `/order-confirmation?orderNumber=${encodeURIComponent(number)}${dbOrderId ? `&orderId=${encodeURIComponent(dbOrderId)}` : ""}`
+    );
+
+    const response = await square.checkout.paymentLinks.create({
+      idempotencyKey: randomUUID(),
+      order: {
+        locationId,
+        referenceId: dbOrderId ?? number,
+        lineItems
+      },
+      checkoutOptions: {
+        redirectUrl,
+        askForShippingAddress: true,
+        merchantSupportEmail: process.env.OWNER_NOTIFICATION_EMAIL || undefined
+      },
+      prePopulatedData: {
+        buyerEmail: email
+      }
+    });
+
+    const paymentLinkUrl = response.paymentLink?.url;
+    if (!paymentLinkUrl) {
+      throw new Error("Square did not return a payment URL.");
+    }
+
+    if (dbOrderId && response.paymentLink?.orderId) {
+      try {
+        await prisma.order.update({
+          where: { id: dbOrderId },
+          data: { stripeCheckoutSessionId: response.paymentLink.orderId }
+        });
+      } catch {
+        // non-fatal
+      }
+    }
+
+    return NextResponse.json({ url: paymentLinkUrl });
+  } catch (error) {
+    console.error("Square payment link creation failed:", error);
+    return NextResponse.json(
+      { error: "Could not start checkout. Please try again or call (772) 528-5208." },
+      { status: 500 }
+    );
+  }
 }
