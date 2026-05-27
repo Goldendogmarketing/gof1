@@ -102,6 +102,9 @@ model Product {
   status           ProductStatus    @default(DRAFT)
   priceCents       Int
   compareAtCents   Int?
+  priceOverridden  Boolean          @default(false)
+  feedPriceCents   Int?
+  feedCompareAtCents Int?
   currency         String           @default("USD")
   flavor           String?
   size             String?

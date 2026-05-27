@@ -43,40 +43,49 @@ export async function syncProductFeed(source = "manual") {
         }
       });
 
+      // Look up the existing product (if any) so we can respect admin price overrides.
+      const existing = await prisma.product.findUnique({
+        where: { externalId: product.externalId },
+        select: { id: true, priceOverridden: true }
+      });
+
+      // Common fields that always reflect the feed.
+      const sharedUpdate = {
+        title: product.title,
+        slug: product.slug,
+        description: product.description,
+        shortDescription: product.shortDescription,
+        sku: product.sku,
+        currency: product.currency,
+        flavor: product.flavor,
+        size: product.size,
+        tags: product.tags,
+        status: product.isPublished ? ("ACTIVE" as const) : ("DRAFT" as const),
+        categoryId: category.id,
+        publishedAt: product.isPublished ? new Date() : null,
+        // Always snapshot the latest feed price so the admin can see (and reset to) it.
+        feedPriceCents: product.priceCents,
+        feedCompareAtCents: product.compareAtCents ?? null
+      };
+
+      // Only overwrite the live displayed price when the admin has not pinned an override.
+      const updateData = existing?.priceOverridden
+        ? sharedUpdate
+        : {
+            ...sharedUpdate,
+            priceCents: product.priceCents,
+            compareAtCents: product.compareAtCents
+          };
+
       const saved = await prisma.product.upsert({
         where: { externalId: product.externalId },
-        update: {
-          title: product.title,
-          slug: product.slug,
-          description: product.description,
-          shortDescription: product.shortDescription,
-          sku: product.sku,
-          priceCents: product.priceCents,
-          compareAtCents: product.compareAtCents,
-          currency: product.currency,
-          flavor: product.flavor,
-          size: product.size,
-          tags: product.tags,
-          status: product.isPublished ? "ACTIVE" : "DRAFT",
-          categoryId: category.id,
-          publishedAt: product.isPublished ? new Date() : null
-        },
+        update: updateData,
         create: {
           externalId: product.externalId,
-          title: product.title,
-          slug: product.slug,
-          description: product.description,
-          shortDescription: product.shortDescription,
-          sku: product.sku,
+          ...sharedUpdate,
           priceCents: product.priceCents,
           compareAtCents: product.compareAtCents,
-          currency: product.currency,
-          flavor: product.flavor,
-          size: product.size,
-          tags: product.tags,
-          status: product.isPublished ? "ACTIVE" : "DRAFT",
-          categoryId: category.id,
-          publishedAt: product.isPublished ? new Date() : null
+          priceOverridden: false
         }
       });
 

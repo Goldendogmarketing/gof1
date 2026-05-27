@@ -18,6 +18,12 @@ export type StoreProduct = {
   tags: string[];
   priceCents: number;
   compareAtCents?: number | null;
+  // Admin-only metadata: when the product is backed by the DB and the price has
+  // been overridden by an admin, these reflect the latest values returned by the
+  // upstream feed (so the admin can compare and reset back to the feed price).
+  priceOverridden?: boolean;
+  feedPriceCents?: number | null;
+  feedCompareAtCents?: number | null;
   currency: string;
   image: string;
   images: Array<{ url: string; alt: string }>;

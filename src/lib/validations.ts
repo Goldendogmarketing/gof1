@@ -5,6 +5,23 @@ const optionalPositiveInt = z.preprocess(
   z.number().int().positive().optional().nullable()
 );
 
+// Used by the inline price editor on /admin/products.
+// `compareAtCents` is optional/nullable so the admin can clear the strike-through MSRP.
+export const priceOverrideSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("override"),
+    priceCents: z.coerce.number().int().positive(),
+    compareAtCents: z
+      .preprocess(
+        (value) => (value === "" || value === undefined ? undefined : value === null ? null : Number(value)),
+        z.number().int().positive().nullable().optional()
+      )
+  }),
+  z.object({
+    action: z.literal("reset")
+  })
+]);
+
 export const productFormSchema = z.object({
   title: z.string().min(2),
   slug: z.string().min(2).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
