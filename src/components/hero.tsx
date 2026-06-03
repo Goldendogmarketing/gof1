@@ -30,24 +30,6 @@ export function Hero() {
 
 <div className="container relative z-10 grid min-h-screen content-center pt-24">
         <motion.div style={{ y: copyY, opacity }} className="max-w-3xl space-y-8">
-          <Image
-            src="/brand/greek-olive-fusion-logo.png"
-            alt="Greek Olive Fusion"
-            width={280}
-            height={86}
-            priority
-            className="w-56 sm:w-72"
-          />
-          <div className="space-y-5">
-            <p className="text-sm font-semibold uppercase text-gold-400">Greek groves. Modern infusions. One table.</p>
-            <h1 className="max-w-3xl font-display text-5xl leading-tight text-balance sm:text-6xl lg:text-7xl">
-              Premium olive oils shaped by harvest, cold press, and Mediterranean pairing.
-            </h1>
-            <p className="max-w-2xl text-base leading-8 text-cream/82 sm:text-lg">
-              Extra virgin Koroneiki olive oil and refined infusions inspired by Ariston Specialties, built for
-              finishing, cooking, gifting, and sharing.
-            </p>
-          </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg" variant="gold">
               <Link href="/shop">
@@ -61,6 +43,16 @@ export function Hero() {
                 Explore the Journey
               </Link>
             </Button>
+          </div>
+          <div className="space-y-5">
+            <p className="text-sm font-semibold uppercase text-gold-400">Greek groves. Modern infusions. One table.</p>
+            <h1 className="max-w-3xl font-display text-5xl leading-tight text-balance sm:text-6xl lg:text-7xl">
+              Premium olive oils shaped by harvest, cold press, and Mediterranean pairing.
+            </h1>
+            <p className="max-w-2xl text-base leading-8 text-cream/82 sm:text-lg">
+              Extra virgin Koroneiki olive oil and refined infusions inspired by Ariston Specialties, built for
+              finishing, cooking, gifting, and sharing.
+            </p>
           </div>
         </motion.div>
       </div>
