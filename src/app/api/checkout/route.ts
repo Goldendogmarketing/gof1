@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { checkoutSchema } from "@/lib/validations";
 import { getProducts } from "@/lib/products";
 import { getSquareClient, getSquareLocationId } from "@/lib/square";
+import { createCloverHostedCheckout } from "@/lib/clover";
+import { getPaymentProvider, isPaymentProviderConfigured } from "@/lib/payment-provider";
 import { orderNumber } from "@/lib/format";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
 
@@ -40,10 +42,17 @@ export async function POST(request: Request) {
   const discountCents = hasDemoDiscount ? Math.round(subtotalCents * 0.1) : 0;
   const shippingCents = subtotalCents > 7500 ? 0 : 900;
 
-  const square = getSquareClient();
-  const locationId = getSquareLocationId();
-  const number = orderNumber();
+  // --- 1. Resolve which payment provider to use --------------------------
+  const provider = getPaymentProvider();
+  if (!isPaymentProviderConfigured(provider)) {
+    return NextResponse.json(
+      { error: "Payments are not yet configured. Please call (772) 528-5208 to place an order." },
+      { status: 503 }
+    );
+  }
 
+  // --- 2. Persist a pending order (best effort) --------------------------
+  const number = orderNumber();
   let dbOrderId: string | null = null;
   if (hasDatabaseUrl()) {
     try {
@@ -81,6 +90,69 @@ export async function POST(request: Request) {
     }
   }
 
+  // --- 3. Create a provider-specific hosted checkout ---------------------
+  const referenceId = dbOrderId ?? number;
+
+  if (provider === "clover") {
+    try {
+      const cloverLineItems = validLines.map((line) => ({
+        name: line.product.title,
+        priceCents: line.product.priceCents,
+        unitQty: line.quantity,
+        note: line.product.shortDescription?.slice(0, 200) || undefined
+      }));
+
+      if (discountCents > 0) {
+        cloverLineItems.push({
+          name: `Discount (${discountCode?.toUpperCase()})`,
+          priceCents: -discountCents,
+          unitQty: 1,
+          note: undefined
+        });
+      }
+
+      if (shippingCents > 0) {
+        cloverLineItems.push({
+          name: "Ground shipping (3-7 business days)",
+          priceCents: shippingCents,
+          unitQty: 1,
+          note: undefined
+        });
+      }
+
+      const checkout = await createCloverHostedCheckout({
+        email,
+        lineItems: cloverLineItems
+      });
+
+      // Persist Clover's session id on the order so the webhook can correlate
+      // the payment back to this order. Reusing stripeCheckoutSessionId here
+      // (originally named for Stripe, repurposed for Square, now Clover) until
+      // we do a dedicated rename migration.
+      if (dbOrderId) {
+        try {
+          await prisma.order.update({
+            where: { id: dbOrderId },
+            data: { stripeCheckoutSessionId: checkout.checkoutSessionId }
+          });
+        } catch {
+          // non-fatal — webhook will still try to match by reference if available.
+        }
+      }
+
+      return NextResponse.json({ url: checkout.href });
+    } catch (error) {
+      console.error("Clover checkout creation failed:", error);
+      return NextResponse.json(
+        { error: "Could not start checkout. Please try again or call (772) 528-5208." },
+        { status: 500 }
+      );
+    }
+  }
+
+  // --- Square fallback (default) -----------------------------------------
+  const square = getSquareClient();
+  const locationId = getSquareLocationId();
   if (!square || !locationId) {
     return NextResponse.json(
       { error: "Payments are not yet configured. Please call (772) 528-5208 to place an order." },
@@ -125,7 +197,7 @@ export async function POST(request: Request) {
       idempotencyKey: randomUUID(),
       order: {
         locationId,
-        referenceId: dbOrderId ?? number,
+        referenceId,
         lineItems
       },
       checkoutOptions: {

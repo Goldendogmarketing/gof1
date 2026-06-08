@@ -77,23 +77,45 @@ GET /api/cron/product-sync
 Authorization: Bearer $CRON_SECRET
 ```
 
-## Stripe
+## Payments
 
-Set:
+The checkout flow at `/api/checkout` supports two providers, selected by
+the `PAYMENT_PROVIDER` env var (`square` or `clover`). The default is
+`square` so existing deployments keep working until the env var is flipped.
+
+### Clover (Hosted Checkout)
+
+```env
+PAYMENT_PROVIDER="clover"
+CLOVER_ENVIRONMENT="production"        # or "sandbox"
+CLOVER_API_TOKEN="..."                  # Setup → API Tokens → "Hosted checkout"
+CLOVER_MERCHANT_ID="0SRZ..."            # 13-char mId
+CLOVER_WEBHOOK_SIGNATURE_KEY="..."      # generated when you register the webhook
+```
+
+Webhook endpoint: `/api/clover/webhook`. Register it in Clover at
+Settings → Ecommerce → Hosted Checkout → Webhook URL, then paste the
+generated signing secret into `CLOVER_WEBHOOK_SIGNATURE_KEY`.
+
+### Square (legacy fallback)
+
+```env
+PAYMENT_PROVIDER="square"
+SQUARE_ACCESS_TOKEN="..."
+SQUARE_LOCATION_ID="..."
+SQUARE_ENVIRONMENT="production"
+SQUARE_WEBHOOK_SIGNATURE_KEY="..."
+```
+
+Webhook endpoint: `/api/square/webhook`. Listens for `payment.updated`.
+
+### Stripe (unused — legacy)
 
 ```env
 STRIPE_SECRET_KEY="sk_live_or_test_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
 ```
-
-Webhook endpoint:
-
-```text
-/api/stripe/webhook
-```
-
-Listen for `checkout.session.completed`.
 
 ## Email
 
