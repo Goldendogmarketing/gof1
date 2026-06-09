@@ -13,8 +13,8 @@ export default function CheckoutPage() {
           <p className="mb-4 text-sm font-semibold uppercase text-gold-600">Checkout</p>
           <h1 className="font-display text-5xl leading-tight text-ink sm:text-6xl">Secure checkout for your table.</h1>
           <p className="mt-5 max-w-xl leading-8 text-ink/68">
-            Enter your email and we&rsquo;ll continue to Square&rsquo;s secure payment page to finish your order.
-            Shipping is free on bundles over $75.
+            Enter your contact and shipping details, and we&rsquo;ll continue to Clover&rsquo;s secure payment page to
+            finish your order. Shipping is free on bundles over $75.
           </p>
         </section>
         <CheckoutForm />

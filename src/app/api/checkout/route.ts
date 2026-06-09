@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 });
   }
 
-  const { email, discountCode, items } = parsed.data;
+  const { email, discountCode, items, shippingAddress } = parsed.data;
   if (!items.length) {
     return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
   }
@@ -58,8 +58,17 @@ export async function POST(request: Request) {
     try {
       const customer = await prisma.customer.upsert({
         where: { email },
-        update: {},
-        create: { email }
+        update: {
+          firstName: shippingAddress.firstName,
+          lastName: shippingAddress.lastName,
+          phone: shippingAddress.phone
+        },
+        create: {
+          email,
+          firstName: shippingAddress.firstName,
+          lastName: shippingAddress.lastName,
+          phone: shippingAddress.phone
+        }
       });
 
       const order = await prisma.order.create({
@@ -73,6 +82,7 @@ export async function POST(request: Request) {
           shippingCents,
           taxCents: 0,
           totalCents: subtotalCents - discountCents + shippingCents,
+          shippingAddress,
           items: {
             create: validLines.map((line) => ({
               productId: line.product.id,
@@ -122,6 +132,9 @@ export async function POST(request: Request) {
 
       const checkout = await createCloverHostedCheckout({
         email,
+        firstName: shippingAddress.firstName,
+        lastName: shippingAddress.lastName,
+        phoneNumber: shippingAddress.phone,
         lineItems: cloverLineItems
       });
 

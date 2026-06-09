@@ -117,15 +117,39 @@ STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
 ```
 
-## Email
+## Email (Resend)
 
-Set:
+Order emails are sent through [Resend](https://resend.com). When a Clover
+webhook confirms a payment, the app fires **three** emails in parallel:
 
-```env
-RESEND_API_KEY="re_..."
-ORDER_FROM_EMAIL="Greek Olive Fusion <orders@your-domain.com>"
-OWNER_NOTIFICATION_EMAIL="orders@your-domain.com"
-```
+| Recipient | Env var | Purpose |
+|---|---|---|
+| The buyer | (n/a — order's `email`) | Receipt / order confirmation |
+| Joe (owner) | `OWNER_NOTIFICATION_EMAIL` | "You got a paid order" alert |
+| Drop-ship processor | `DROPSHIP_NOTIFICATION_EMAIL` | Full fulfillment packet (line items + shipping address + plain-text copy) |
+
+### One-time setup for `greekolivefusion.com`
+
+1. **Create Resend account** at https://resend.com using the owner's email.
+2. **Verify the domain:** Resend dashboard → Domains → Add Domain → `greekolivefusion.com`.
+   Resend will show 3 DNS records to add (one MX, one or two TXT — DKIM + SPF).
+   Add them in your registrar's DNS panel; verification usually completes in <10 min.
+3. **Create an API key:** Resend → API Keys → Create. Name it `greek-olive-fusion`.
+   Permission: **Full access** (or restrict to **Send** if available).
+4. **Add the env vars to Vercel** (Production + Preview + Development):
+
+   ```env
+   RESEND_API_KEY="re_..."
+   ORDER_FROM_EMAIL="Greek Olive Fusion <orders@greekolivefusion.com>"
+   OWNER_NOTIFICATION_EMAIL="joe@greekolivefusion.com"
+   DROPSHIP_NOTIFICATION_EMAIL="fulfillment@your-dropship-partner.com"
+   ```
+
+5. **Redeploy** so the new env is picked up. The next paid order will trigger
+   all three emails automatically.
+
+> Until `RESEND_API_KEY` is set, every email send is silently skipped and the
+> webhook still returns 200 to Clover — payments are not blocked.
 
 ## Vercel Deployment
 

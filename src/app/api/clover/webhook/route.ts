@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { hasDatabaseUrl, prisma } from "@/lib/db";
 import { verifyCloverWebhookSignature } from "@/lib/clover";
+import { sendAllOrderEmails, type OrderEmailPayload } from "@/lib/email";
+import { shippingAddressSchema, type ShippingAddress } from "@/lib/validations";
 
 // Clover webhooks must be processed with the raw body (the signature is computed over it),
 // so we force the Node runtime — Edge gets a different request body API.
@@ -74,7 +76,8 @@ export async function POST(request: Request) {
     // We persist the Clover checkoutSessionId into stripeCheckoutSessionId at
     // checkout-create time so this lookup keeps a single "external session id" column.
     const order = await prisma.order.findFirst({
-      where: { stripeCheckoutSessionId: checkoutSessionId }
+      where: { stripeCheckoutSessionId: checkoutSessionId },
+      include: { items: true }
     });
 
     if (!order) {
@@ -83,11 +86,49 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, matched: false });
     }
 
-    if (isSuccess && order.status !== "PAID") {
-      await prisma.order.update({
-        where: { id: order.id },
-        data: { status: "PAID" }
-      });
+    if (isSuccess) {
+      // Only fire emails on the first PAID transition — Clover retries can deliver
+      // the same event multiple times, and we never want to send duplicate receipts.
+      const alreadyPaid = order.status === "PAID";
+      if (!alreadyPaid) {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "PAID" }
+        });
+
+        // Build the email payload from the now-PAID order. We coerce shippingAddress
+        // through the zod schema so older orders missing fields don't crash the render.
+        const shippingAddress = parseShippingAddress(order.shippingAddress);
+        const payload: OrderEmailPayload = {
+          orderNumber: order.orderNumber,
+          customerEmail: order.email,
+          shippingAddress,
+          lineItems: order.items.map((item) => ({
+            title: item.title,
+            quantity: item.quantity,
+            unitPriceCents: item.unitPriceCents,
+            totalCents: item.totalCents
+          })),
+          subtotalCents: order.subtotalCents,
+          discountCents: order.discountCents,
+          shippingCents: order.shippingCents,
+          taxCents: order.taxCents,
+          totalCents: order.totalCents,
+          currency: order.currency,
+          adminUrl: buildAdminOrderUrl(order.id)
+        };
+
+        // Fire-and-don't-fail: log per-email result, never propagate to Clover.
+        try {
+          const results = await sendAllOrderEmails(payload);
+          console.info(
+            `Clover webhook emails sent for ${order.orderNumber}:`,
+            JSON.stringify(results)
+          );
+        } catch (error) {
+          console.warn(`Clover webhook email dispatch failed for ${order.orderNumber}:`, error);
+        }
+      }
     } else if (isFailure && order.status !== "CANCELLED" && order.status !== "PAID") {
       await prisma.order.update({
         where: { id: order.id },
@@ -101,6 +142,18 @@ export async function POST(request: Request) {
     // Return 500 so Clover retries the delivery.
     return NextResponse.json({ error: "Order update failed" }, { status: 500 });
   }
+}
+
+function parseShippingAddress(raw: unknown): ShippingAddress | null {
+  if (!raw || typeof raw !== "object") return null;
+  const parsed = shippingAddressSchema.safeParse(raw);
+  return parsed.success ? parsed.data : null;
+}
+
+function buildAdminOrderUrl(orderId: string): string | undefined {
+  const base = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!base) return undefined;
+  return `${base.replace(/\/$/, "")}/admin/orders?focus=${encodeURIComponent(orderId)}`;
 }
 
 function pickField(source: Record<string, unknown>, keys: string[]): unknown {

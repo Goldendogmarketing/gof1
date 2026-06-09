@@ -38,9 +38,28 @@ export const productFormSchema = z.object({
   inventoryQuantity: z.coerce.number().int().min(0)
 });
 
+// US state codes — kept loose (2-letter regex) so it accepts every territory
+// without us maintaining a hard-coded list.
+const stateCode = z.string().trim().regex(/^[A-Za-z]{2}$/, "Use a 2-letter state code").transform((v) => v.toUpperCase());
+const usZip = z.string().trim().regex(/^\d{5}(-\d{4})?$/, "Enter a 5-digit ZIP (or ZIP+4)");
+
+export const shippingAddressSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required"),
+  lastName: z.string().trim().min(1, "Last name is required"),
+  addressLine1: z.string().trim().min(1, "Street address is required"),
+  addressLine2: z.string().trim().optional().or(z.literal("")),
+  city: z.string().trim().min(1, "City is required"),
+  state: stateCode,
+  zip: usZip,
+  phone: z.string().trim().min(7, "Enter a valid phone number")
+});
+
+export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
+
 export const checkoutSchema = z.object({
   email: z.string().email(),
   discountCode: z.string().optional(),
+  shippingAddress: shippingAddressSchema,
   items: z.array(
     z.object({
       productId: z.string(),
