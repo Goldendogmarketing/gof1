@@ -76,6 +76,18 @@ export const customerUpdateSchema = z.object({
   firstName: z.string().trim().nullable().optional(),
   lastName: z.string().trim().nullable().optional(),
   phone: z.string().trim().nullable().optional(),
+  addressLine1: z.string().trim().nullable().optional(),
+  addressLine2: z.string().trim().nullable().optional(),
+  city: z.string().trim().nullable().optional(),
+  // State: 2-letter code, uppercased, but allow null to clear it.
+  state: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/, "Use a 2-letter state code")
+    .transform((v) => v.toUpperCase())
+    .nullable()
+    .optional(),
+  zip: z.string().trim().regex(/^\d{5}(-\d{4})?$/, "Enter a 5-digit ZIP (or ZIP+4)").nullable().optional(),
   marketingOptIn: z.boolean().optional()
 });
 

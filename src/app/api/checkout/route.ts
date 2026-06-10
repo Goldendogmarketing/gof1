@@ -59,19 +59,22 @@ export async function POST(request: Request) {
   let dbOrderId: string | null = null;
   if (hasDatabaseUrl()) {
     try {
+      const customerData = {
+        firstName: shippingAddress.firstName,
+        lastName: shippingAddress.lastName,
+        phone: shippingAddress.phone,
+        // Snapshot the latest shipping address as the customer's default mailing
+        // address so the admin sees it without having to dig through orders.
+        addressLine1: shippingAddress.addressLine1,
+        addressLine2: shippingAddress.addressLine2 || null,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        zip: shippingAddress.zip
+      };
       const customer = await prisma.customer.upsert({
         where: { email },
-        update: {
-          firstName: shippingAddress.firstName,
-          lastName: shippingAddress.lastName,
-          phone: shippingAddress.phone
-        },
-        create: {
-          email,
-          firstName: shippingAddress.firstName,
-          lastName: shippingAddress.lastName,
-          phone: shippingAddress.phone
-        }
+        update: customerData,
+        create: { email, ...customerData }
       });
 
       const order = await prisma.order.create({

@@ -25,6 +25,11 @@ export default async function AdminCustomersPage() {
     firstName: row.firstName,
     lastName: row.lastName,
     phone: row.phone,
+    addressLine1: row.addressLine1,
+    addressLine2: row.addressLine2,
+    city: row.city,
+    state: row.state,
+    zip: row.zip,
     marketingOptIn: row.marketingOptIn,
     orderCount: row._count.orders,
     totalSpentCents: row.orders

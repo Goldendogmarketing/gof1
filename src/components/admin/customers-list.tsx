@@ -12,11 +12,22 @@ export type AdminCustomerRow = {
   firstName: string | null;
   lastName: string | null;
   phone: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  state: string | null;
+  zip: string | null;
   marketingOptIn: boolean;
   orderCount: number;
   totalSpentCents: number;
   createdAt: string;
 };
+
+function formatAddress(c: AdminCustomerRow): string | null {
+  if (!c.addressLine1 && !c.city) return null;
+  const cityLine = [c.city, c.state, c.zip].filter(Boolean).join(", ").replace(/, (\d)/, " $1");
+  return [c.addressLine1, c.addressLine2, cityLine].filter(Boolean).join(" · ");
+}
 
 export function CustomersList({ customers }: { customers: AdminCustomerRow[] }) {
   const router = useRouter();
@@ -77,6 +88,9 @@ export function CustomersList({ customers }: { customers: AdminCustomerRow[] }) 
               </h2>
               <p className="mt-1 text-sm text-ink/60">{customer.email}</p>
               {customer.phone ? <p className="text-sm text-ink/60">{customer.phone}</p> : null}
+              {formatAddress(customer) ? (
+                <p className="mt-1 text-sm text-ink/60">{formatAddress(customer)}</p>
+              ) : null}
               <p className="mt-1 text-xs text-ink/50">
                 {customer.orderCount} {customer.orderCount === 1 ? "order" : "orders"}
                 {" · "}
@@ -125,6 +139,11 @@ function CustomerEditCard({
   const [firstName, setFirstName] = React.useState(customer.firstName ?? "");
   const [lastName, setLastName] = React.useState(customer.lastName ?? "");
   const [phone, setPhone] = React.useState(customer.phone ?? "");
+  const [addressLine1, setAddressLine1] = React.useState(customer.addressLine1 ?? "");
+  const [addressLine2, setAddressLine2] = React.useState(customer.addressLine2 ?? "");
+  const [city, setCity] = React.useState(customer.city ?? "");
+  const [state, setState] = React.useState(customer.state ?? "");
+  const [zip, setZip] = React.useState(customer.zip ?? "");
   const [marketingOptIn, setMarketingOptIn] = React.useState(customer.marketingOptIn);
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -142,6 +161,11 @@ function CustomerEditCard({
           firstName: firstName || null,
           lastName: lastName || null,
           phone: phone || null,
+          addressLine1: addressLine1 || null,
+          addressLine2: addressLine2 || null,
+          city: city || null,
+          state: state || null,
+          zip: zip || null,
           marketingOptIn
         })
       });
@@ -178,6 +202,39 @@ function CustomerEditCard({
         <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">Phone</span>
         <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
       </label>
+
+      <div className="mt-1 border-t border-olive-900/10 pt-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">Mailing address</p>
+      </div>
+      <label className="grid gap-1.5">
+        <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">Street address</span>
+        <Input value={addressLine1} onChange={(e) => setAddressLine1(e.target.value)} autoComplete="address-line1" />
+      </label>
+      <label className="grid gap-1.5">
+        <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">Apt, suite, unit</span>
+        <Input value={addressLine2} onChange={(e) => setAddressLine2(e.target.value)} autoComplete="address-line2" />
+      </label>
+      <div className="grid gap-3 sm:grid-cols-[1.5fr_1fr_1fr]">
+        <label className="grid gap-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">City</span>
+          <Input value={city} onChange={(e) => setCity(e.target.value)} autoComplete="address-level2" />
+        </label>
+        <label className="grid gap-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">State</span>
+          <Input
+            value={state}
+            onChange={(e) => setState(e.target.value.toUpperCase())}
+            maxLength={2}
+            placeholder="FL"
+            autoComplete="address-level1"
+          />
+        </label>
+        <label className="grid gap-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">ZIP</span>
+          <Input value={zip} onChange={(e) => setZip(e.target.value)} autoComplete="postal-code" />
+        </label>
+      </div>
+
       <label className="flex items-center gap-2 text-sm text-olive-900">
         <input
           type="checkbox"
