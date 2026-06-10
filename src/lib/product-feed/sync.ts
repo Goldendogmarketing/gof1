@@ -32,8 +32,10 @@ export async function syncProductFeed(source = "manual") {
     const externalProducts = await adapter.fetchProducts({ cache: "no-store" });
     const products = externalProducts.map(normalizeExternalProduct);
     let upserted = 0;
+    const failures: Array<{ externalId: string; title: string; error: string }> = [];
 
     for (const product of products) {
+     try {
       const category = await prisma.productCategory.upsert({
         where: { slug: product.categorySlug },
         update: { name: product.categoryName },
@@ -114,25 +116,44 @@ export async function syncProductFeed(source = "manual") {
       });
 
       upserted += 1;
+     } catch (error) {
+       // One bad product (e.g. a duplicate-SKU collision before we relaxed the
+       // unique constraint) must not abort the whole sync. Record it and move on.
+       failures.push({
+         externalId: product.externalId,
+         title: product.title,
+         error: error instanceof Error ? error.message : String(error)
+       });
+       console.warn(`Sync failed for product ${product.externalId} (${product.title}):`, error);
+     }
     }
+
+    const failureSummary = failures.length
+      ? ` ${failures.length} product${failures.length === 1 ? "" : "s"} failed (see metadata).`
+      : "";
 
     await prisma.apiSyncLog.update({
       where: { id: log.id },
       data: {
-        status: "SUCCESS",
+        status: failures.length === 0 ? "SUCCESS" : "FAILED",
         finishedAt: new Date(),
         productsSeen: products.length,
         productsUpserted: upserted,
-        message: `Synced ${upserted} products from ${adapter.name}.`
+        message: `Synced ${upserted}/${products.length} products from ${adapter.name}.${failureSummary}`,
+        metadata: failures.length
+          ? { adapter: adapter.name, failures: failures.slice(0, 20) }
+          : { adapter: adapter.name }
       }
     });
 
     return {
       source,
       adapter: adapter.name,
-      status: "SUCCESS",
+      status: failures.length === 0 ? "SUCCESS" : "PARTIAL",
       productsSeen: products.length,
       productsUpserted: upserted,
+      failures: failures.length,
+      sampleFailures: failures.slice(0, 5),
       startedAt,
       finishedAt: new Date()
     };

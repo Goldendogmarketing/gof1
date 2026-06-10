@@ -106,7 +106,9 @@ model Product {
   subtitle         String?
   description      String
   shortDescription String
-  sku              String?          @unique
+  // sku is NOT @unique — real WooCommerce feeds duplicate SKUs across
+  // variants and legacy products. externalId is the real conflict key.
+  sku              String?
   status           ProductStatus    @default(DRAFT)
   priceCents       Int
   compareAtCents   Int?
@@ -134,6 +136,7 @@ model Product {
 
   @@index([status, isFeatured])
   @@index([categoryId])
+  @@index([sku])
 }
 
 model ProductVariant {
@@ -142,7 +145,8 @@ model ProductVariant {
   product        Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   externalId     String?     @unique
   title          String
-  sku            String?     @unique
+  // sku not @unique — see Product.sku comment
+  sku            String?
   priceCents     Int
   compareAtCents Int?
   size           String?
@@ -152,6 +156,8 @@ model ProductVariant {
   orderItems     OrderItem[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+
+  @@index([sku])
 }
 
 model ProductImage {
