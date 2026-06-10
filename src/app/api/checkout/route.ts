@@ -41,9 +41,9 @@ export async function POST(request: Request) {
   const subtotalCents = validLines.reduce((total, line) => total + line.product.priceCents * line.quantity, 0);
   const hasDemoDiscount = discountCode?.toUpperCase() === "TABLE10" && subtotalCents >= 5000;
   const discountCents = hasDemoDiscount ? Math.round(subtotalCents * 0.1) : 0;
-  // Shipping is calculated off the raw subtotal so the cart page preview matches
-  // what the customer is charged at checkout, regardless of any discount code.
-  const shippingCents = calculateShippingCents(subtotalCents);
+  // Shipping is calculated off the post-discount amount (the actual dollars the
+  // customer is paying for product), so the threshold reflects what they're spending.
+  const shippingCents = calculateShippingCents(subtotalCents - discountCents);
 
   // --- 1. Resolve which payment provider to use --------------------------
   const provider = getPaymentProvider();
