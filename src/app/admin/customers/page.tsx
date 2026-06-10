@@ -1,38 +1,54 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CustomersList, type AdminCustomerRow } from "@/components/admin/customers-list";
 import { hasDatabaseUrl, prisma } from "@/lib/db";
 
+// Always rebuild — customer list changes whenever the admin edits or deletes.
+export const dynamic = "force-dynamic";
+
 export default async function AdminCustomersPage() {
-  const customers = hasDatabaseUrl()
-    ? await prisma.customer.findMany({ orderBy: { createdAt: "desc" }, take: 50 }).catch(() => [])
+  const rows = hasDatabaseUrl()
+    ? await prisma.customer
+        .findMany({
+          orderBy: { createdAt: "desc" },
+          take: 100,
+          include: {
+            _count: { select: { orders: true } },
+            orders: { select: { totalCents: true, status: true } }
+          }
+        })
+        .catch(() => [])
     : [];
+
+  const customers: AdminCustomerRow[] = rows.map((row) => ({
+    id: row.id,
+    email: row.email,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    phone: row.phone,
+    marketingOptIn: row.marketingOptIn,
+    orderCount: row._count.orders,
+    totalSpentCents: row.orders
+      .filter((o) => o.status === "PAID" || o.status === "FULFILLED")
+      .reduce((sum, o) => sum + o.totalCents, 0),
+    createdAt: row.createdAt.toISOString()
+  }));
 
   return (
     <section className="space-y-6">
       <div>
         <p className="mb-3 text-sm font-semibold uppercase text-gold-600">Customers</p>
         <h1 className="font-display text-5xl text-ink">Customer Profiles</h1>
+        <p className="mt-2 max-w-2xl text-sm text-ink/60">
+          Edit contact details or remove a customer who requests to be deleted. Their historical orders are kept
+          (decoupled from the customer record) so accounting is preserved.
+        </p>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Customer list</CardTitle>
+          <CardTitle>{customers.length} customer{customers.length === 1 ? "" : "s"}</CardTitle>
         </CardHeader>
         <CardContent>
-          {customers.length ? (
-            <div className="grid gap-3">
-              {customers.map((customer) => (
-                <article key={customer.id} className="rounded-sm border border-olive-900/10 bg-cream p-4">
-                  <h2 className="font-semibold text-ink">
-                    {[customer.firstName, customer.lastName].filter(Boolean).join(" ") || customer.email}
-                  </h2>
-                  <p className="mt-1 text-sm text-ink/60">{customer.email}</p>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm leading-7 text-ink/65">
-              Customer profiles are created from checkout email capture and historical orders once the database is connected.
-            </p>
-          )}
+          <CustomersList customers={customers} />
         </CardContent>
       </Card>
     </section>

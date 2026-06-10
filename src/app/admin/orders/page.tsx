@@ -1,53 +1,59 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatMoney } from "@/lib/format";
+import { OrdersList, type AdminOrderRow } from "@/components/admin/orders-list";
 import { hasDatabaseUrl, prisma } from "@/lib/db";
 
+// Always rebuild — order list changes whenever the admin deletes one.
+export const dynamic = "force-dynamic";
+
 export default async function AdminOrdersPage() {
-  const orders = hasDatabaseUrl()
-    ? await prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 50 }).catch(() => [])
+  const rows = hasDatabaseUrl()
+    ? await prisma.order
+        .findMany({
+          orderBy: { createdAt: "desc" },
+          take: 200,
+          include: {
+            customer: { select: { firstName: true, lastName: true } },
+            _count: { select: { items: true } }
+          }
+        })
+        .catch(() => [])
     : [];
+
+  const orders: AdminOrderRow[] = rows.map((row) => {
+    const customerName =
+      row.customer && (row.customer.firstName || row.customer.lastName)
+        ? [row.customer.firstName, row.customer.lastName].filter(Boolean).join(" ")
+        : null;
+
+    return {
+      id: row.id,
+      orderNumber: row.orderNumber,
+      email: row.email,
+      customerName,
+      status: row.status,
+      totalCents: row.totalCents,
+      currency: row.currency,
+      itemCount: row._count.items,
+      createdAt: row.createdAt.toISOString()
+    };
+  });
 
   return (
     <section className="space-y-6">
       <div>
         <p className="mb-3 text-sm font-semibold uppercase text-gold-600">Orders</p>
         <h1 className="font-display text-5xl text-ink">Order Management</h1>
+        <p className="mt-2 max-w-2xl text-sm text-ink/60">
+          Delete stale unprocessed orders (PENDING / DRAFT / CANCELLED) one-click. Paid and fulfilled orders require
+          a force-confirmation since they&rsquo;re accounting records.
+        </p>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Recent orders</CardTitle>
+          <CardTitle>{orders.length} order{orders.length === 1 ? "" : "s"}</CardTitle>
         </CardHeader>
         <CardContent>
-          {orders.length ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="text-olive-700">
-                  <tr>
-                    <th className="py-3">Order</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id} className="border-t border-olive-900/10">
-                      <td className="py-3 font-semibold">{order.orderNumber}</td>
-                      <td>{order.email}</td>
-                      <td>{order.status}</td>
-                      <td>{formatMoney(order.totalCents, order.currency)}</td>
-                      <td>{order.createdAt.toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-sm leading-7 text-ink/65">
-              Orders will appear after Stripe webhook events or demo checkout persistence are connected to a database.
-            </p>
-          )}
+          <OrdersList orders={orders} />
         </CardContent>
       </Card>
     </section>

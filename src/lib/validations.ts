@@ -69,6 +69,16 @@ export const checkoutSchema = z.object({
   )
 });
 
+// Used by the inline editor on /admin/customers. Email + name + phone are all
+// optional in the update payload — the admin only sends fields they're changing.
+export const customerUpdateSchema = z.object({
+  email: z.string().email().transform((v) => v.trim().toLowerCase()).optional(),
+  firstName: z.string().trim().nullable().optional(),
+  lastName: z.string().trim().nullable().optional(),
+  phone: z.string().trim().nullable().optional(),
+  marketingOptIn: z.boolean().optional()
+});
+
 export const newAdminUserSchema = z.object({
   email: z.string().email().transform((v) => v.trim().toLowerCase()),
   name: z.string().trim().min(1, "Name is required"),
