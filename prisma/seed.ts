@@ -164,7 +164,7 @@ async function main() {
     create: {
       key: "storefront",
       value: {
-        announcement: "Free shipping on tasting bundles over $75",
+        announcement: "Free shipping on orders over $85 · $27 flat under $85",
         supportEmail: "hello@greekolivefusion.com",
         taxMode: "stripe_automatic_tax"
       }

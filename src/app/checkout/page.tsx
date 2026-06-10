@@ -14,7 +14,7 @@ export default function CheckoutPage() {
           <h1 className="font-display text-5xl leading-tight text-ink sm:text-6xl">Secure checkout for your table.</h1>
           <p className="mt-5 max-w-xl leading-8 text-ink/68">
             Enter your contact and shipping details, and we&rsquo;ll continue to Clover&rsquo;s secure payment page to
-            finish your order. Shipping is free on bundles over $75.
+            finish your order. Flat $27 shipping on orders under $85 &mdash; free on $85 and up.
           </p>
         </section>
         <CheckoutForm />

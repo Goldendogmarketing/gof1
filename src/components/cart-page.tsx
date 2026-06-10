@@ -6,10 +6,11 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart-provider";
 import { formatMoney } from "@/lib/format";
+import { calculateShippingCents } from "@/lib/shipping";
 
 export function CartPage() {
   const { lines, removeItem, updateQuantity, subtotalCents } = useCart();
-  const shippingCents = subtotalCents > 7500 || subtotalCents === 0 ? 0 : 900;
+  const shippingCents = calculateShippingCents(subtotalCents);
   const estimatedTaxCents = Math.round(subtotalCents * 0.07);
   const totalCents = subtotalCents + shippingCents + estimatedTaxCents;
 

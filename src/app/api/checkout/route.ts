@@ -6,6 +6,7 @@ import { getSquareClient, getSquareLocationId } from "@/lib/square";
 import { createCloverHostedCheckout } from "@/lib/clover";
 import { getPaymentProvider, isPaymentProviderConfigured } from "@/lib/payment-provider";
 import { orderNumber } from "@/lib/format";
+import { calculateShippingCents } from "@/lib/shipping";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
 
 function absoluteUrl(path: string) {
@@ -40,7 +41,9 @@ export async function POST(request: Request) {
   const subtotalCents = validLines.reduce((total, line) => total + line.product.priceCents * line.quantity, 0);
   const hasDemoDiscount = discountCode?.toUpperCase() === "TABLE10" && subtotalCents >= 5000;
   const discountCents = hasDemoDiscount ? Math.round(subtotalCents * 0.1) : 0;
-  const shippingCents = subtotalCents > 7500 ? 0 : 900;
+  // Shipping is calculated off the raw subtotal so the cart page preview matches
+  // what the customer is charged at checkout, regardless of any discount code.
+  const shippingCents = calculateShippingCents(subtotalCents);
 
   // --- 1. Resolve which payment provider to use --------------------------
   const provider = getPaymentProvider();
