@@ -69,6 +69,13 @@ export const checkoutSchema = z.object({
   )
 });
 
+export const newAdminUserSchema = z.object({
+  email: z.string().email().transform((v) => v.trim().toLowerCase()),
+  name: z.string().trim().min(1, "Name is required"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.enum(["ADMIN", "STAFF"]).default("ADMIN")
+});
+
 export const contactSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),

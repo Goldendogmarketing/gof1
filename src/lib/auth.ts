@@ -3,6 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
 
+// Inlined here to avoid a circular import with src/lib/admin.ts.
+function isMasterAdminEmail(email: string): boolean {
+  const masterRaw = process.env.MASTER_ADMIN_EMAIL ?? process.env.ADMIN_EMAIL;
+  if (!masterRaw) return false;
+  return email.trim().toLowerCase() === masterRaw.trim().toLowerCase();
+}
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt"
@@ -23,9 +30,13 @@ export const authOptions: NextAuthOptions = {
 
         if (!email || !password) return null;
 
+        // Env-admin shortcut: only honors the master admin's email. Other admin
+        // accounts must exist as DB User rows (granted by the master at /admin/users).
         if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
           const matchesEnvAdmin =
-            email === process.env.ADMIN_EMAIL.toLowerCase() && password === process.env.ADMIN_PASSWORD;
+            email === process.env.ADMIN_EMAIL.toLowerCase() &&
+            password === process.env.ADMIN_PASSWORD &&
+            isMasterAdminEmail(email);
 
           if (matchesEnvAdmin) {
             return {
