@@ -1,3 +1,4 @@
+import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { hasDatabaseUrl, prisma } from "@/lib/db";
 import { getProducts } from "@/lib/products";
@@ -48,16 +49,22 @@ export default async function AdminDashboardPage() {
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Launch readiness</CardTitle>
+          <CardTitle>Analytics</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-3 text-sm text-ink/70 md:grid-cols-2">
-          <p>Database: {dbReady ? "connected" : "demo fallback"}</p>
-          <p>
-            Square: {process.env.SQUARE_ACCESS_TOKEN && process.env.SQUARE_LOCATION_ID ? "configured" : "pending"}
-            {process.env.SQUARE_ENVIRONMENT ? ` (${process.env.SQUARE_ENVIRONMENT})` : ""}
-          </p>
-          <p>Resend: {process.env.RESEND_API_KEY ? "configured" : "pending"}</p>
-          <p>Product feed: {process.env.PRODUCT_FEED_URL ? "external feed" : "demo adapter"}</p>
+        <CardContent>
+          <div className="grid gap-4 rounded-sm border border-dashed border-olive-700/25 bg-cream/60 p-6 text-center sm:grid-cols-[auto_1fr] sm:text-left">
+            <div className="grid place-items-center sm:place-items-start">
+              <BarChart3 className="size-10 text-olive-700/40" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="font-display text-xl text-ink">Analytics coming soon</h3>
+              <p className="text-sm leading-6 text-ink/65">
+                Site analytics will appear here once we decide what we want to track &mdash; typical options include
+                traffic by page, conversion funnel (cart &rarr; checkout &rarr; paid), top products, traffic sources,
+                and revenue trends. Tell me which of these matter most and I&rsquo;ll wire it up.
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </section>
