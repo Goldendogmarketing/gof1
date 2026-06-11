@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import { getProductBySlug, getProducts } from "@/lib/products";
 
+// Product detail pages self-refresh once a minute so price edits and feed
+// syncs propagate without us having to revalidate by hand.
+export const revalidate = 60;
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };

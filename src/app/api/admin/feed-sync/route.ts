@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions, isAdminSession } from "@/lib/auth";
 import { getProductFeedAdapter } from "@/lib/product-feed/adapter";
@@ -14,6 +15,23 @@ async function canAdmin() {
 export async function POST() {
   if (!(await canAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const result = await syncProductFeed("manual");
+
+  // Bust the ISR cache for the pages that read getProducts() so a fresh sync
+  // is visible immediately instead of waiting on the revalidate window.
+  for (const path of ["/", "/shop", "/admin/products"]) {
+    try {
+      revalidatePath(path);
+    } catch {
+      // Best-effort — never let a cache-bust failure mask the sync result.
+    }
+  }
+  // Product detail pages share a single dynamic segment — clear the whole layout.
+  try {
+    revalidatePath("/shop/[slug]", "page");
+  } catch {
+    // ignore
+  }
+
   return NextResponse.json(result);
 }
 

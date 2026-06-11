@@ -5,6 +5,10 @@ import { PairingsBand } from "@/components/pairings-band";
 import { ProductCarousel } from "@/components/product-carousel";
 import { getFeaturedProducts, getJourneyScenes } from "@/lib/products";
 
+// Regenerate the homepage at most once a minute so a freshly synced product
+// catalog reaches the featured carousel without hand-busting the cache.
+export const revalidate = 60;
+
 export default async function HomePage() {
   const [featuredProducts, journeyScenes] = await Promise.all([getFeaturedProducts(), getJourneyScenes()]);
 

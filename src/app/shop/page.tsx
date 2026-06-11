@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   description: "Shop Greek Olive Fusion extra virgin olive oils, infused olive oils, bundles, and Mediterranean pairings."
 };
 
+// Self-refresh once a minute so new feed-synced products show up automatically.
+export const revalidate = 60;
+
 export default async function ShopPage() {
   const [products, facets] = await Promise.all([getProducts(), getProductFacets()]);
 
