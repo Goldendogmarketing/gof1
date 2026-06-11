@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FeaturedToggle } from "@/components/admin/featured-toggle";
 import { PriceEditor } from "@/components/admin/price-editor";
 import { SyncButton } from "@/components/admin/sync-button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminProductsPage() {
   const products = await getProducts();
   const dbBacked = hasDatabaseUrl();
+  const featuredCount = products.filter((p) => p.isFeatured).length;
 
   return (
     <section className="space-y-6">
@@ -21,6 +23,10 @@ export default async function AdminProductsPage() {
           <p className="mt-2 max-w-xl text-sm text-ink/60">
             Edit any price inline to override the value coming from the product feed. Overrides survive feed syncs;
             use <span className="font-semibold">Reset</span> to drop the override and snap back to the latest feed price.
+          </p>
+          <p className="mt-2 max-w-xl text-sm text-ink/60">
+            Check <span className="font-semibold">Featured</span> on any product to add it to the homepage rotation.
+            The homepage picks 4 at random from {featuredCount > 0 ? <strong>{featuredCount} featured products</strong> : "the featured pool"} and refreshes every minute.
           </p>
         </div>
         <SyncButton />
@@ -37,9 +43,13 @@ export default async function AdminProductsPage() {
               </div>
               <div>
                 <h2 className="font-display text-2xl text-ink">{product.title}</h2>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <Badge>{product.category}</Badge>
-                  {product.isFeatured ? <Badge className="border-gold-400/40 text-gold-600">Featured</Badge> : null}
+                  {dbBacked ? (
+                    <FeaturedToggle productId={product.id} initial={product.isFeatured} />
+                  ) : product.isFeatured ? (
+                    <Badge className="border-gold-400/40 text-gold-600">Featured</Badge>
+                  ) : null}
                   {product.priceOverridden ? (
                     <Badge className="border-gold-400/40 text-gold-600">Price override</Badge>
                   ) : null}

@@ -135,12 +135,23 @@ export async function getProducts() {
 
 export async function getFeaturedProducts() {
   const products = await getProducts();
-  const featured = products
-    .filter((product) => product.isFeatured)
-    .sort((a, b) => a.featuredRank - b.featuredRank)
-    .slice(0, 8);
+  const featured = products.filter((product) => product.isFeatured);
 
-  return featured.length ? featured : products.slice(0, 8);
+  // Falls back to the first 8 products if nothing is flagged so the homepage
+  // never goes blank during initial setup.
+  const pool = featured.length ? featured : products.slice(0, 8);
+
+  // Fisher-Yates shuffle so each homepage render picks a fresh selection.
+  // The page is wrapped in revalidate=60, so visitors within the same minute
+  // see the same 4 — but each minute brings new picks. Use a fresh copy so
+  // the underlying products array isn't mutated.
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, 8);
 }
 
 export async function getProductBySlug(slug: string) {
