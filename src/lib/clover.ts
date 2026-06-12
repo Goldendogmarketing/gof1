@@ -55,6 +55,12 @@ export type CreateCheckoutInput = {
   tipsEnabled?: boolean;
   /** Optional UUID of a saved hosted-checkout page config (controls branding, redirect URLs, etc.). */
   pageConfigUuid?: string;
+  /**
+   * Where Clover should send the customer after a successful payment. Clover's hosted
+   * page accepts this as the top-level `redirectUrl` field. Falls back to the URL
+   * configured on the merchant's saved pageConfig if omitted.
+   */
+  redirectUrl?: string;
 };
 
 export type CreateCheckoutResult = {
@@ -98,7 +104,8 @@ export async function createCloverHostedCheckout(input: CreateCheckoutInput): Pr
     },
     tips: { enabled: Boolean(input.tipsEnabled) },
     shoppingCart: { lineItems },
-    ...(input.pageConfigUuid ? { pageConfigUuid: input.pageConfigUuid } : {})
+    ...(input.pageConfigUuid ? { pageConfigUuid: input.pageConfigUuid } : {}),
+    ...(input.redirectUrl ? { redirectUrl: input.redirectUrl } : {})
   };
 
   const response = await fetch(`${getCloverApiBaseUrl()}/invoicingcheckoutservice/v1/checkouts`, {

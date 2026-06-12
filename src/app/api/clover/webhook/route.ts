@@ -26,9 +26,13 @@ export async function POST(request: Request) {
   const rawBody = await request.text();
   const signature = request.headers.get("clover-signature");
 
-  // Only enforce verification if the signing secret is configured. This lets a
-  // development environment receive test webhooks before Clover is fully wired.
+  // Fail-closed in production: a missing signing secret means anyone can POST
+  // forged "PAID" events, which would dispatch receipts and fulfillment emails.
   const secret = process.env.CLOVER_WEBHOOK_SIGNATURE_KEY;
+  if (process.env.NODE_ENV === "production" && !secret) {
+    console.error("Clover webhook rejected: CLOVER_WEBHOOK_SIGNATURE_KEY is not configured.");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 503 });
+  }
   if (secret) {
     const verified = verifyCloverWebhookSignature(rawBody, signature, secret);
     if (!verified) {
@@ -43,13 +47,40 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
 
-  // Clover sends a relatively flat payload; field casing has varied historically,
-  // so we look up each interesting field defensively.
-  const type = String(pickField(event, ["type", "Type", "eventType"]) ?? "").toUpperCase();
-  const status = String(pickField(event, ["status", "Status"]) ?? "").toUpperCase();
+  // Clover wraps event details under `data` (sometimes `Data`). Unwrap that first,
+  // then look for the fields we care about. The previous flat lookup pulled the
+  // entire data object back and stringified it to "[object Object]", so no order
+  // ever matched and PAID transitions silently never fired.
+  const dataObject =
+    (isObject(event.data) && (event.data as Record<string, unknown>)) ||
+    (isObject(event.Data) && (event.Data as Record<string, unknown>)) ||
+    event;
+
+  const type = String(
+    pickField(event, ["type", "Type", "eventType"]) ??
+      pickField(dataObject, ["type", "Type", "eventType"]) ??
+      ""
+  ).toUpperCase();
+  const status = String(
+    pickField(event, ["status", "Status"]) ??
+      pickField(dataObject, ["status", "Status"]) ??
+      ""
+  ).toUpperCase();
   const checkoutSessionId = String(
-    pickField(event, ["data", "Data", "checkoutSessionId", "CheckoutSessionId"]) ?? ""
+    pickField(dataObject, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ??
+      pickField(event, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ??
+      ""
   );
+
+  // Log everything once on prod — invaluable the first time Clover sends a
+  // real-money event. Strips noisy keys but keeps shape and ids for diagnosis.
+  console.info("Clover webhook received:", {
+    type,
+    status,
+    checkoutSessionId,
+    eventKeys: Object.keys(event),
+    dataKeys: isObject(dataObject) ? Object.keys(dataObject) : []
+  });
 
   const isPaymentEvent = type === "PAYMENT" || type.startsWith("PAYMENT_") || type.startsWith("PAYMENT.");
   if (!isPaymentEvent || !checkoutSessionId) {
@@ -163,4 +194,8 @@ function pickField(source: Record<string, unknown>, keys: string[]): unknown {
     }
   }
   return undefined;
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

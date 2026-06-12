@@ -136,12 +136,22 @@ export async function POST(request: Request) {
         });
       }
 
+      // Build a redirect URL Clover will send the customer to after payment so
+      // they land back on our order-confirmation page instead of Clover's
+      // generic "thank you" screen. Falls back to a pageConfigUuid if one is
+      // configured on the merchant dashboard.
+      const cloverRedirectUrl = absoluteUrl(
+        `/order-confirmation?orderNumber=${encodeURIComponent(number)}${dbOrderId ? `&orderId=${encodeURIComponent(dbOrderId)}` : ""}`
+      );
+
       const checkout = await createCloverHostedCheckout({
         email,
         firstName: shippingAddress.firstName,
         lastName: shippingAddress.lastName,
         phoneNumber: shippingAddress.phone,
-        lineItems: cloverLineItems
+        lineItems: cloverLineItems,
+        redirectUrl: cloverRedirectUrl,
+        pageConfigUuid: process.env.CLOVER_PAGE_CONFIG_UUID || undefined
       });
 
       // Persist Clover's session id on the order so the webhook can correlate

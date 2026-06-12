@@ -142,6 +142,13 @@ export function CheckoutForm() {
         {loading ? <Loader2 className="size-5 animate-spin" /> : <Lock className="size-5" />}
         Continue to secure checkout
       </Button>
+      <p className="text-xs leading-5 text-ink/55">
+        By placing your order, you agree to our{" "}
+        <a href="/terms" className="underline hover:text-olive-700">Terms of Service</a>,{" "}
+        <a href="/privacy" className="underline hover:text-olive-700">Privacy Policy</a>,{" "}
+        <a href="/shipping" className="underline hover:text-olive-700">Shipping Policy</a>, and{" "}
+        <a href="/returns" className="underline hover:text-olive-700">Returns &amp; Refunds</a>.
+      </p>
     </form>
   );
 }
