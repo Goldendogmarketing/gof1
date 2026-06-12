@@ -4,9 +4,9 @@ This Privacy Policy is effective as of June 12, 2026.
 
 ## Who We Are
 
-Greek Olive Fusion (operated by [Greek Olive Fusion, LLC], referred to in this policy as "we," "us," or "our") runs the website at https://www.greekolivefusion.com, where we sell specialty Mediterranean foods such as olive oil, olives, and vinegars. This policy explains what personal information we collect from you, how we use it, who we share it with, and the choices you have.
+Greek Olive Fusion (operated by Greek Olive Fusion, LLC, referred to in this policy as "we," "us," or "our") runs the website at https://www.greekolivefusion.com, where we sell specialty Mediterranean foods such as olive oil, olives, and vinegars. This policy explains what personal information we collect from you, how we use it, who we share it with, and the choices you have.
 
-If you have any questions about this policy, you can reach us at [support@greekolivefusion.com] or by mail at [Business Mailing Address, City, State ZIP].
+If you have any questions about this policy, you can reach us at [support@greekolivefusion.com] or by mail at 8320 Singleton Pl, Keystone Heights, FL 32656.
 
 ## Information We Collect
 
@@ -137,7 +137,8 @@ We may update this Privacy Policy from time to time. When we do, we will change 
 If you have any questions, concerns, or privacy requests, please contact us:
 
 - Email: [support@greekolivefusion.com]
-- Mail: [Greek Olive Fusion, LLC], [Business Mailing Address, City, State ZIP]
+- Phone: +1 (772) 528-5208
+- Mail: Greek Olive Fusion, LLC, 8320 Singleton Pl, Keystone Heights, FL 32656
 
 We will do our best to respond within a reasonable time, and in any event within the time required by applicable law.
 

@@ -4,7 +4,7 @@ June 12, 2026
 
 ## Acceptance of Terms
 
-These Terms of Service ("Terms") govern your use of the Greek Olive Fusion website at https://www.greekolivefusion.com (the "Site") and any purchases you make through it. The Site is operated by [Greek Olive Fusion, LLC] ("Greek Olive Fusion," "we," "us," or "our").
+These Terms of Service ("Terms") govern your use of the Greek Olive Fusion website at https://www.greekolivefusion.com (the "Site") and any purchases you make through it. The Site is operated by Greek Olive Fusion, LLC ("Greek Olive Fusion," "we," "us," or "our").
 
 By visiting the Site, browsing our products, creating an account, or placing an order, you agree to be bound by these Terms and by our Privacy Policy, Shipping Policy, and Returns Policy, each of which is incorporated by reference. If you do not agree to these Terms, please do not use the Site.
 
@@ -80,7 +80,7 @@ Statements on the Site about flavor, origin, tradition, or pairing are for gener
 
 ## Intellectual Property
 
-The Site and all content on it, including the Greek Olive Fusion name and logo, product photographs, copy, graphics, page layouts, recipes, and underlying code, are owned by or licensed to [Greek Olive Fusion, LLC] and are protected by U.S. and international intellectual property laws.
+The Site and all content on it, including the Greek Olive Fusion name and logo, product photographs, copy, graphics, page layouts, recipes, and underlying code, are owned by or licensed to Greek Olive Fusion, LLC and are protected by U.S. and international intellectual property laws.
 
 We grant you a limited, personal, non-exclusive, non-transferable, revocable license to access and view the Site for the purpose of browsing and purchasing products for personal, non-commercial use. You may not copy, reproduce, republish, modify, distribute, sell, frame, mirror, scrape, or create derivative works from any part of the Site without our prior written permission. Trademarks, product names, and logos belonging to third parties remain the property of their respective owners.
 
@@ -135,11 +135,11 @@ We may suspend or terminate your access to the Site or your account at any time,
 
 ## Governing Law, Disputes, and Venue
 
-These Terms and any dispute arising out of or relating to them or the Site are governed by the laws of [State of Florida, United States], without regard to its conflict-of-laws principles.
+These Terms and any dispute arising out of or relating to them or the Site are governed by the laws of State of Florida, United States, without regard to its conflict-of-laws principles.
 
 Before filing any legal action, you agree to first contact us at [support@greekolivefusion.com] and attempt to resolve the dispute informally. We will make a good-faith effort to respond and work toward a resolution within thirty (30) days of receiving your written notice.
 
-If the dispute is not resolved informally, you and Greek Olive Fusion agree that the exclusive venue for any legal action will be the state or federal courts located in [State of Florida, United States], and you consent to the personal jurisdiction of those courts. Nothing in this section prevents either party from bringing an individual claim in a small-claims court of competent jurisdiction.
+If the dispute is not resolved informally, you and Greek Olive Fusion agree that the exclusive venue for any legal action will be the state or federal courts located in State of Florida, United States, and you consent to the personal jurisdiction of those courts. Nothing in this section prevents either party from bringing an individual claim in a small-claims court of competent jurisdiction.
 
 ## Severability and Entire Agreement
 
@@ -155,9 +155,10 @@ We may update these Terms from time to time to reflect changes in our business, 
 
 If you have questions about these Terms or your use of the Site, please contact us at:
 
-[Greek Olive Fusion, LLC]
-[Business Mailing Address, City, State ZIP]
-[support@greekolivefusion.com]
+Greek Olive Fusion, LLC
+8320 Singleton Pl, Keystone Heights, FL 32656
+Phone: +1 (772) 528-5208
+Email: [support@greekolivefusion.com]
 
 *These Terms are a starting template; please have them reviewed by a qualified attorney before relying on them.*
 `;

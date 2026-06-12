@@ -35,7 +35,7 @@ Our site is designed to work with the latest versions of major browsers — incl
 If you experience any difficulty using our website, or if you would like product information in an alternative format, please reach out to us. We will do our best to respond within **2 business days** and to help you complete your purchase or find the information you need.
 
 - **Email:** [support@greekolivefusion.com]
-- **Phone:** [(XXX) XXX-XXXX]
+- **Phone:** +1 (772) 528-5208
 
 When contacting us, please include the page URL, a brief description of the issue, and the assistive technology or browser you were using, so we can investigate quickly.
 
