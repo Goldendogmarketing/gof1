@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { AddToCart } from "@/components/add-to-cart";
+import { ProductGallery } from "@/components/product-gallery";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
@@ -52,16 +52,11 @@ export default async function ProductPage({ params }: PageProps) {
         </Button>
 
         <section className="grid gap-10 lg:grid-cols-[1fr_0.85fr]">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-cream shadow-soft">
-            <Image
-              src={product.image}
-              alt={product.images[0]?.alt ?? product.title}
-              fill
-              priority
-              sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+          <ProductGallery
+            images={product.images}
+            fallbackImage={product.image}
+            productTitle={product.title}
+          />
 
           <div className="grid content-center gap-8">
             <div className="space-y-4">
@@ -85,8 +80,8 @@ export default async function ProductPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="mr-auto">
+            <div className="space-y-4">
+              <div>
                 <span className="font-display text-4xl text-olive-900">
                   {formatMoney(product.priceCents, product.currency)}
                 </span>

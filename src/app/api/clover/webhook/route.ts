@@ -112,9 +112,22 @@ export async function POST(request: Request) {
     });
 
     if (!order) {
-      // Could be a webhook for a checkout that wasn't persisted (e.g. DATABASE_URL
-      // was missing at the time the checkout was created). Acknowledge.
-      return NextResponse.json({ ok: true, matched: false });
+      // We could not find a matching order. There are two cases:
+      //  (a) Race: the checkout API persisted the Order row but had not yet
+      //      written the Clover checkoutSessionId onto it when Clover fired
+      //      the first webhook. Returning 503 prompts Clover to retry — by the
+      //      time the retry lands the session id has been stored.
+      //  (b) The order was never persisted (e.g. DATABASE_URL was missing at
+      //      checkout time). Retries will all miss; Clover will give up after
+      //      its retry budget. We accept that as a logged outcome rather than
+      //      silently ack 200 and lose visibility into real-money mismatches.
+      console.warn(
+        `Clover webhook: no order found for checkoutSessionId=${checkoutSessionId}. Returning 503 to trigger Clover retry.`
+      );
+      return NextResponse.json(
+        { error: "Order not yet available, retry shortly", checkoutSessionId },
+        { status: 503 }
+      );
     }
 
     if (isSuccess) {

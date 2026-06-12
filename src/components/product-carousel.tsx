@@ -8,12 +8,25 @@ import { Button } from "@/components/ui/button";
 import type { StoreProduct } from "@/lib/types";
 
 export function ProductCarousel({ products }: { products: StoreProduct[] }) {
+  if (!products.length) return null;
+
+  const count = Math.min(products.length, 4);
+  const gridClass =
+    count === 1
+      ? "grid-cols-1"
+      : count === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : count === 3
+      ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+      : "grid-cols-2 md:grid-cols-4";
+  const containerClass = count < 4 ? "mx-auto max-w-4xl" : "";
+
   return (
     <section className="relative overflow-hidden bg-parchment py-10 sm:py-14">
       <div className="container">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-600">Best sellers</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-600">Featured</p>
             <h2 className="font-display text-2xl text-ink sm:text-3xl">Oils ready for the table</h2>
           </div>
           <Button asChild variant="secondary" size="sm">
@@ -24,8 +37,8 @@ export function ProductCarousel({ products }: { products: StoreProduct[] }) {
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {products.map((product, index) => (
+        <div className={`grid gap-4 ${gridClass} ${containerClass}`}>
+          {products.slice(0, 4).map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 16 }}

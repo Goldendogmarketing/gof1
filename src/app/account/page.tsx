@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { Package, ShieldCheck } from "lucide-react";
+import { KeyRound, Package, ShieldCheck } from "lucide-react";
 import { AccountPanel } from "@/components/account-panel";
 import { CustomerOrders } from "@/components/customer-orders";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -83,11 +83,15 @@ export default async function AccountPage({
           <CustomerOrders email={session.user?.email ?? ""} />
         </section>
 
-        {!admin ? (
-          <div className="mt-10 flex justify-end">
-            <SignOutButton />
-          </div>
-        ) : null}
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+          <Button asChild variant="ghost">
+            <Link href="/account/security">
+              <KeyRound className="size-4" />
+              Change password
+            </Link>
+          </Button>
+          {!admin ? <SignOutButton /> : null}
+        </div>
       </div>
     </main>
   );

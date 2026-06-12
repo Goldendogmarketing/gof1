@@ -58,7 +58,6 @@ export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
 
 export const checkoutSchema = z.object({
   email: z.string().email(),
-  discountCode: z.string().optional(),
   shippingAddress: shippingAddressSchema,
   items: z.array(
     z.object({

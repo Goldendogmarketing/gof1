@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid checkout details." }, { status: 400 });
   }
 
-  const { email, discountCode, items, shippingAddress } = parsed.data;
+  const { email, items, shippingAddress } = parsed.data;
   if (!items.length) {
     return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
   }
@@ -39,11 +39,8 @@ export async function POST(request: Request) {
 
   const validLines = lines as Array<NonNullable<(typeof lines)[number]>>;
   const subtotalCents = validLines.reduce((total, line) => total + line.product.priceCents * line.quantity, 0);
-  const hasDemoDiscount = discountCode?.toUpperCase() === "TABLE10" && subtotalCents >= 5000;
-  const discountCents = hasDemoDiscount ? Math.round(subtotalCents * 0.1) : 0;
-  // Shipping is calculated off the post-discount amount (the actual dollars the
-  // customer is paying for product), so the threshold reflects what they're spending.
-  const shippingCents = calculateShippingCents(subtotalCents - discountCents);
+  const discountCents = 0;
+  const shippingCents = calculateShippingCents(subtotalCents);
 
   // --- 1. Resolve which payment provider to use --------------------------
   const provider = getPaymentProvider();
@@ -118,15 +115,6 @@ export async function POST(request: Request) {
         note: line.product.shortDescription?.slice(0, 200) || undefined
       }));
 
-      if (discountCents > 0) {
-        cloverLineItems.push({
-          name: `Discount (${discountCode?.toUpperCase()})`,
-          priceCents: -discountCents,
-          unitQty: 1,
-          note: undefined
-        });
-      }
-
       if (shippingCents > 0) {
         cloverLineItems.push({
           name: "Ground shipping (3-7 business days)",
@@ -198,15 +186,6 @@ export async function POST(request: Request) {
     },
     note: line.product.shortDescription?.slice(0, 200) || undefined
   }));
-
-  if (discountCents > 0) {
-    lineItems.push({
-      name: `Discount (${discountCode?.toUpperCase()})`,
-      quantity: "1",
-      basePriceMoney: { amount: BigInt(-discountCents), currency: "USD" },
-      note: undefined
-    });
-  }
 
   if (shippingCents > 0) {
     lineItems.push({

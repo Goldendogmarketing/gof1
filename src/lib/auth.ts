@@ -12,7 +12,11 @@ function isMasterAdminEmail(email: string): boolean {
 
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
+    // Cap session at 8 hours so a forgotten browser doesn't leave an admin
+    // panel hot indefinitely. The library default is 30 days, which is too
+    // long for a panel that can edit prices, delete customers, and refund orders.
+    maxAge: 60 * 60 * 8
   },
   pages: {
     signIn: "/account"

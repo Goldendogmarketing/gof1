@@ -24,7 +24,6 @@ export function CheckoutForm() {
   const [state, setState] = React.useState("");
   const [zip, setZip] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [discountCode, setDiscountCode] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = React.useState<FieldErrors>({});
@@ -64,7 +63,6 @@ export function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          discountCode,
           shippingAddress: parsed.data,
           items: lines.map((line) => ({
             productId: line.product.id,
@@ -117,23 +115,14 @@ export function CheckoutForm() {
         <Field label="Phone" value={phone} onChange={setPhone} error={fieldErrors.phone} placeholder="(772) 555-0123" autoComplete="tel" inputMode="tel" />
       </fieldset>
 
-      {/* Discount + summary */}
-      <fieldset className="grid gap-3">
-        <legend className="text-xs font-semibold uppercase tracking-wide text-olive-700/70">Discount</legend>
-        <label className="grid gap-1.5">
-          <span className="text-sm font-semibold text-olive-900">Discount code</span>
-          <Input value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="TABLE10" autoComplete="off" />
-        </label>
-      </fieldset>
-
       <div className="rounded-sm bg-cream p-4 text-sm text-ink/70">
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>{formatMoney(subtotalCents)}</span>
         </div>
         <div className="mt-2 flex justify-between">
-          <span>Shipping and tax</span>
-          <span>Calculated at checkout</span>
+          <span>Shipping</span>
+          <span>{subtotalCents >= 8500 ? "Free" : "$27 flat"}</span>
         </div>
       </div>
 

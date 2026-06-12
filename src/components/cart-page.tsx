@@ -11,8 +11,7 @@ import { calculateShippingCents } from "@/lib/shipping";
 export function CartPage() {
   const { lines, removeItem, updateQuantity, subtotalCents } = useCart();
   const shippingCents = calculateShippingCents(subtotalCents);
-  const estimatedTaxCents = Math.round(subtotalCents * 0.07);
-  const totalCents = subtotalCents + shippingCents + estimatedTaxCents;
+  const totalCents = subtotalCents + shippingCents;
 
   if (!lines.length) {
     return (
@@ -86,12 +85,8 @@ export function CartPage() {
             <dd>{formatMoney(subtotalCents)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt>Estimated shipping</dt>
-            <dd>{shippingCents ? formatMoney(shippingCents) : "Included"}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt>Estimated tax</dt>
-            <dd>{formatMoney(estimatedTaxCents)}</dd>
+            <dt>Shipping</dt>
+            <dd>{shippingCents ? formatMoney(shippingCents) : "Free"}</dd>
           </div>
           <div className="mt-3 flex justify-between border-t border-white/10 pt-4 font-display text-3xl">
             <dt>Total</dt>
