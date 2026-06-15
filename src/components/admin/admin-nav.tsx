@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Boxes, FileText, KeyRound, Settings, ShieldCheck, ShoppingBag, UsersRound } from "lucide-react";
+import { BarChart3, Boxes, KeyRound, Settings, ShieldCheck, ShoppingBag, UsersRound } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -7,7 +7,6 @@ const links = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/customers", label: "Customers", icon: UsersRound },
   { href: "/admin/users", label: "Admin Users", icon: ShieldCheck },
-  { href: "/admin/content", label: "Content", icon: FileText },
   { href: "/admin/settings", label: "Settings", icon: Settings },
   { href: "/account/security", label: "Change Password", icon: KeyRound }
 ];
