@@ -39,8 +39,9 @@ export async function POST(request: Request) {
 
   const validLines = lines as Array<NonNullable<(typeof lines)[number]>>;
   const subtotalCents = validLines.reduce((total, line) => total + line.product.priceCents * line.quantity, 0);
+  const itemCount = validLines.reduce((total, line) => total + line.quantity, 0);
   const discountCents = 0;
-  const shippingCents = calculateShippingCents(subtotalCents);
+  const shippingCents = calculateShippingCents(subtotalCents, itemCount);
 
   // --- 1. Resolve which payment provider to use --------------------------
   const provider = getPaymentProvider();

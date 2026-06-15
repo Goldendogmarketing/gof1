@@ -9,8 +9,8 @@ import { formatMoney } from "@/lib/format";
 import { calculateShippingCents } from "@/lib/shipping";
 
 export function CartPage() {
-  const { lines, removeItem, updateQuantity, subtotalCents } = useCart();
-  const shippingCents = calculateShippingCents(subtotalCents);
+  const { lines, removeItem, updateQuantity, subtotalCents, itemCount } = useCart();
+  const shippingCents = calculateShippingCents(subtotalCents, itemCount);
   const totalCents = subtotalCents + shippingCents;
 
   if (!lines.length) {

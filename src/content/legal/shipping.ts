@@ -8,14 +8,13 @@ If you live in Hawaii, Alaska, or a US territory, we'll still get your order to 
 
 ## Shipping Rates
 
-Our shipping is simple:
+Our shipping is straightforward:
 
-- **Flat rate of $27 USD** on orders under $85
-- **FREE shipping** on orders of $85 or more
+- **$40.40** for the first bottle
+- **+$1.10** for each additional bottle in the same order
+- **FREE shipping** once your product subtotal reaches **$85 or more**
 
-The $85 free-shipping threshold is calculated **after** any discount or promo codes are applied. So if your cart is $90 and a code brings it to $80, the order will fall under the flat-rate tier.
-
-Sales tax is collected where applicable based on your shipping address. You'll see the exact tax amount at checkout before you pay.
+The $85 free-shipping threshold is based on your **product subtotal** (the cost of the items themselves), not including shipping. You'll always see the exact shipping amount at checkout before you pay.
 
 ## Who Fulfills Your Order
 
@@ -61,7 +60,7 @@ If we need to delay your order more than a day for heat reasons, we'll let you k
 
 Please double-check your shipping address at checkout. Customers are responsible for entering an accurate, deliverable address.
 
-If a package is returned to sender because of an incorrect, incomplete, or undeliverable address, we're happy to reship it — but reshipping may incur an **additional shipping fee equal to our standard flat rate ($27)**. We'll reach out before reshipping so you can confirm the corrected address and the charge.
+If a package is returned to sender because of an incorrect, incomplete, or undeliverable address, we're happy to reship it — but reshipping may incur an **additional shipping fee equal to the original shipping charge**. We'll reach out before reshipping so you can confirm the corrected address and the charge.
 
 ## Delivery Delays Outside Our Control
 

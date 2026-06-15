@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/components/cart-provider";
 import { formatMoney } from "@/lib/format";
+import { calculateShippingCents } from "@/lib/shipping";
 import { shippingAddressSchema } from "@/lib/validations";
 
 type FieldErrors = Partial<Record<
@@ -14,7 +15,8 @@ type FieldErrors = Partial<Record<
 >>;
 
 export function CheckoutForm() {
-  const { lines, subtotalCents } = useCart();
+  const { lines, subtotalCents, itemCount } = useCart();
+  const shippingCents = calculateShippingCents(subtotalCents, itemCount);
   const [email, setEmail] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -122,7 +124,11 @@ export function CheckoutForm() {
         </div>
         <div className="mt-2 flex justify-between">
           <span>Shipping</span>
-          <span>{subtotalCents >= 8500 ? "Free" : "$27 flat"}</span>
+          <span>{shippingCents > 0 ? formatMoney(shippingCents) : "Free"}</span>
+        </div>
+        <div className="mt-2 flex justify-between border-t border-olive-900/10 pt-2 font-semibold text-ink">
+          <span>Total</span>
+          <span>{formatMoney(subtotalCents + shippingCents)}</span>
         </div>
       </div>
 
