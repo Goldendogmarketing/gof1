@@ -9,3 +9,7 @@ dist
 vercel
 .vercel
 prisma/dev.db
+
+# Saved page-HTML dumps and scratch audit output (not part of the app)
+/*.html
+.tsc-out.txt
