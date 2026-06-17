@@ -187,8 +187,11 @@ export async function POST(request: Request) {
         };
 
         // Fire-and-don't-fail: log per-email result, never propagate to Clover.
+        // Test orders (orderNumber prefixed "TEST-") skip the Ariston fulfillment
+        // email so a live payment test never reaches the drop-ship partner.
+        const isTestOrder = order.orderNumber.startsWith("TEST-");
         try {
-          const results = await sendAllOrderEmails(payload);
+          const results = await sendAllOrderEmails(payload, { skipDropship: isTestOrder });
           console.info(
             `Clover webhook emails sent for ${order.orderNumber}:`,
             JSON.stringify(results)

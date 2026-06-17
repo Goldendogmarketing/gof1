@@ -279,11 +279,18 @@ export async function sendDropshipOrderEmail(payload: OrderEmailPayload): Promis
 // then return 200 to Clover.
 // ---------------------------------------------------------------------------
 
-export async function sendAllOrderEmails(payload: OrderEmailPayload) {
+export async function sendAllOrderEmails(
+  payload: OrderEmailPayload,
+  options?: { skipDropship?: boolean }
+) {
   const results = await Promise.all([
     sendCustomerReceipt(payload).catch((err) => ({ sent: false, reason: `customer: ${String(err)}` })),
     sendOwnerOrderNotification(payload).catch((err) => ({ sent: false, reason: `owner: ${String(err)}` })),
-    sendDropshipOrderEmail(payload).catch((err) => ({ sent: false, reason: `dropship: ${String(err)}` }))
+    // Test orders intentionally skip the fulfillment partner so we never send
+    // Ariston a fake order to pack and ship.
+    options?.skipDropship
+      ? Promise.resolve<SendResult>({ sent: false, reason: "skipped (test order)" })
+      : sendDropshipOrderEmail(payload).catch((err) => ({ sent: false, reason: `dropship: ${String(err)}` }))
   ]);
 
   return {
