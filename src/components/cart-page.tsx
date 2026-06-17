@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCart } from "@/components/cart-provider";
+import { decodeEntities, useCart } from "@/components/cart-provider";
+import { FreeShippingBar } from "@/components/free-shipping-bar";
 import { formatMoney } from "@/lib/format";
 import { calculateShippingCents } from "@/lib/shipping";
 
@@ -33,12 +34,18 @@ export function CartPage() {
         {lines.map((line) => (
           <article key={line.product.id} className="grid gap-5 rounded-md border border-olive-900/10 bg-white/55 p-4 sm:grid-cols-[132px_1fr]">
             <div className="relative aspect-square overflow-hidden rounded-sm bg-cream">
-              <Image src={line.product.image} alt={line.product.title} fill className="object-cover" sizes="132px" />
+              <Image
+                src={line.product.image}
+                alt={line.product.images[0]?.alt ?? line.product.title}
+                fill
+                className="object-contain p-2"
+                sizes="132px"
+              />
             </div>
             <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
               <div>
                 <h2 className="font-display text-2xl text-ink">{line.product.title}</h2>
-                <p className="mt-2 text-sm text-ink/60">{line.product.shortDescription}</p>
+                <p className="mt-2 text-sm text-ink/60">{decodeEntities(line.product.shortDescription)}</p>
                 <p className="mt-3 text-sm font-semibold text-olive-700">
                   {formatMoney(line.product.priceCents, line.product.currency)}
                 </p>
@@ -79,6 +86,10 @@ export function CartPage() {
 
       <aside className="h-fit rounded-md border border-olive-900/10 bg-olive-900 p-6 text-cream shadow-soft">
         <h2 className="font-display text-3xl">Order Summary</h2>
+        <FreeShippingBar
+          subtotalCents={subtotalCents}
+          className="mt-5 rounded-sm bg-white/5 p-4 [&_[role=progressbar]]:bg-white/15 [&_p]:text-cream/90 [&_span]:!text-gold-400"
+        />
         <dl className="mt-6 grid gap-3 text-sm">
           <div className="flex justify-between">
             <dt>Subtotal</dt>

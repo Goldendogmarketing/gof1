@@ -6,7 +6,7 @@ This Privacy Policy is effective as of June 12, 2026.
 
 Greek Olive Fusion (operated by Greek Olive Fusion, LLC, referred to in this policy as "we," "us," or "our") runs the website at https://www.greekolivefusion.com, where we sell specialty Mediterranean foods such as olive oil, olives, and vinegars. This policy explains what personal information we collect from you, how we use it, who we share it with, and the choices you have.
 
-If you have any questions about this policy, you can reach us at [support@greekolivefusion.com] or by mail at 8320 Singleton Pl, Keystone Heights, FL 32656.
+If you have any questions about this policy, you can reach us at support@greekolivefusion.com or by mail at 8320 Singleton Pl, Keystone Heights, FL 32656.
 
 ## Information We Collect
 
@@ -105,7 +105,7 @@ If you are a California resident, you have the right to:
 - **Opt out of the sale or sharing** of personal information. We do **not** sell or share personal information as those terms are defined under California law, so there is nothing to opt out of.
 - **Not be discriminated against** for exercising your privacy rights.
 
-To exercise any of these rights, please email us at [support@greekolivefusion.com]. We will verify your identity (usually by confirming details from your account or recent orders) before responding. You may also use an authorized agent to submit a request on your behalf.
+To exercise any of these rights, please email us at support@greekolivefusion.com. We will verify your identity (usually by confirming details from your account or recent orders) before responding. You may also use an authorized agent to submit a request on your behalf.
 
 ## Your EU and UK Privacy Rights (GDPR / UK GDPR)
 
@@ -122,11 +122,11 @@ We ship only within the United States, but our site may be visited from the EU, 
 
 Our legal bases for processing your data include performing our contract with you (such as fulfilling your order), complying with legal obligations, your consent (for example, marketing), and our legitimate interests in running and securing our business.
 
-To exercise any of these rights, please email us at [support@greekolivefusion.com].
+To exercise any of these rights, please email us at support@greekolivefusion.com.
 
 ## Children's Privacy
 
-Greek Olive Fusion is intended for adults. The site is not directed at children under the age of 13, and we do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us at [support@greekolivefusion.com] and we will delete it.
+Greek Olive Fusion is intended for adults. The site is not directed at children under the age of 13, and we do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us at support@greekolivefusion.com and we will delete it.
 
 ## Changes to This Policy
 
@@ -136,11 +136,9 @@ We may update this Privacy Policy from time to time. When we do, we will change 
 
 If you have any questions, concerns, or privacy requests, please contact us:
 
-- Email: [support@greekolivefusion.com]
+- Email: support@greekolivefusion.com
 - Phone: +1 (772) 528-5208
 - Mail: Greek Olive Fusion, LLC, 8320 Singleton Pl, Keystone Heights, FL 32656
 
 We will do our best to respond within a reasonable time, and in any event within the time required by applicable law.
-
-*This policy is a starting template; please have it reviewed by a qualified attorney licensed in your jurisdiction before relying on it.*
 `;

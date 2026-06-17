@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SHIPPABLE_STATE_CODES, OUT_OF_AREA_MESSAGE } from "@/lib/us-states";
 
 const optionalPositiveInt = z.preprocess(
   (value) => (value === "" || value === null || value === undefined ? undefined : Number(value)),
@@ -38,9 +39,15 @@ export const productFormSchema = z.object({
   inventoryQuantity: z.coerce.number().int().min(0)
 });
 
-// US state codes — kept loose (2-letter regex) so it accepts every territory
-// without us maintaining a hard-coded list.
-const stateCode = z.string().trim().regex(/^[A-Za-z]{2}$/, "Use a 2-letter state code").transform((v) => v.toUpperCase());
+// US state codes — restricted to our shipping area (the 48 contiguous states +
+// DC). Rejects Alaska, Hawaii, US territories, and APO/FPO so checkout can't
+// accept an order we won't fulfill. See src/lib/us-states.ts.
+const stateCode = z
+  .string()
+  .trim()
+  .regex(/^[A-Za-z]{2}$/, "Use a 2-letter state code")
+  .transform((v) => v.toUpperCase())
+  .refine((code) => SHIPPABLE_STATE_CODES.has(code), OUT_OF_AREA_MESSAGE);
 const usZip = z.string().trim().regex(/^\d{5}(-\d{4})?$/, "Enter a 5-digit ZIP (or ZIP+4)");
 
 export const shippingAddressSchema = z.object({

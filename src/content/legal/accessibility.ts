@@ -13,7 +13,8 @@ Our site is built on a modern Next.js and Tailwind CSS stack, which gives us str
 - **Semantic HTML** — we use meaningful headings, landmarks, lists, and buttons so that the structure of each page is clear to assistive technologies.
 - **Keyboard navigation** — interactive elements such as menus, product cards, filters, and the checkout flow can be reached and operated using only a keyboard.
 - **Alt text on product imagery** — our olives, oils, and pantry items include descriptive alternative text so screen reader users can understand what is shown.
-- **Color contrast checks** — we review text and background combinations against WCAG AA contrast ratios and adjust our Tailwind palette accordingly.
+- **Color contrast checks** — we review text and background combinations against WCAG AA contrast ratios and have adjusted our accent colors so that small text, including labels and eyebrows, meets the 4.5:1 minimum.
+- **Respect for motion preferences** — decorative animations such as scroll parallax, pinned scenes, and autoplaying video honor your system's "reduce motion" setting. When that preference is on, we present the same content as static, stacked sections instead.
 - **Screen-reader-friendly forms** — input fields on our cart, checkout, and contact forms use proper labels, error messages, and focus states.
 
 ## Known Limitations

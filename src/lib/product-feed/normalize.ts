@@ -1,25 +1,37 @@
+import { cleanProductTitle } from "@/lib/clean-title";
 import { slugify } from "@/lib/format";
 import type { ExternalProduct, NormalizedProduct } from "@/lib/product-feed/types";
 
 export function normalizeExternalProduct(product: ExternalProduct): NormalizedProduct {
   const categoryName = product.category?.trim() || "Olive Oil";
   const categorySlug = product.categorySlug?.trim() || slugify(categoryName);
-  const slug = product.slug?.trim() || slugify(product.title);
+
+  // Clean the raw feed title once, here, so EVERY downstream surface (cards, the
+  // PDP <h1>, and the SEO <title>) receives the display-safe name. The cleaner
+  // also lifts a trailing size token (e.g. "8.45 fl oz"); we use it to backfill
+  // the `size` field when the feed left it empty — this fixes the empty-Size
+  // spec on the PDP. The slug is still derived from the raw title (the cleaner
+  // never removes information that would change identity), and the slug feeds
+  // generateStaticParams, so cleaning the display title does not affect routing.
+  const cleaned = cleanProductTitle(product.title);
+  const title = cleaned.title || product.title.trim();
+  const size = product.size?.trim() || cleaned.size;
+  const slug = product.slug?.trim() || slugify(title);
 
   return {
     externalId: product.externalId,
-    title: product.title.trim(),
+    title,
     slug,
     description:
       product.description?.trim() ||
-      `${product.title.trim()} from Greek Olive Fusion, selected for aroma, texture, and Mediterranean table pairings.`,
+      `${title} from Greek Olive Fusion, selected for aroma, texture, and Mediterranean table pairings.`,
     shortDescription:
       product.shortDescription?.trim() ||
-      `${product.title.trim()} selected for premium Mediterranean cooking and finishing.`,
+      `${title} selected for premium Mediterranean cooking and finishing.`,
     categoryName,
     categorySlug,
     flavor: product.flavor?.trim(),
-    size: product.size?.trim(),
+    size,
     sku: product.sku?.trim(),
     priceCents: product.priceCents,
     compareAtCents: product.compareAtCents ?? null,

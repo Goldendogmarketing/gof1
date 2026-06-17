@@ -4,7 +4,10 @@ import { getProductFacets, getProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Shop Olive Oils",
-  description: "Shop Greek Olive Fusion extra virgin olive oils, infused olive oils, bundles, and Mediterranean pairings."
+  description: "Shop Greek Olive Fusion extra virgin olive oils, infused olive oils, bundles, and Mediterranean pairings.",
+  alternates: {
+    canonical: "/shop"
+  }
 };
 
 // Self-refresh once a minute so new feed-synced products show up automatically.

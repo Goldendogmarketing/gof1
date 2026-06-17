@@ -5,7 +5,7 @@ export function PairingsBand() {
     <section className="bg-cream py-16 sm:py-20">
       <div className="container">
         <div className="mb-10 max-w-2xl">
-          <p className="mb-3 text-sm font-semibold uppercase text-gold-600">Pairings</p>
+          <p className="mb-3 text-sm font-semibold uppercase text-gold-accessible">Pairings</p>
           <h2 className="font-display text-4xl text-ink sm:text-5xl">A pantry built around finishing moments</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-4">

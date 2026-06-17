@@ -71,6 +71,14 @@ export async function POST(request: Request) {
       pickField(event, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ??
       ""
   );
+  // Clover reports the captured amount in integer cents (same unit as our
+  // totalCents). It can surface under a few key names depending on the event
+  // shape; null when absent so we can refuse to mark PAID without a verifiable
+  // amount rather than trusting the event blindly.
+  const paidCents = parseAmountCents(
+    pickField(dataObject, ["amount", "Amount", "amountMoney", "total", "Total"]) ??
+      pickField(event, ["amount", "Amount", "amountMoney", "total", "Total"])
+  );
 
   // Log everything once on prod — invaluable the first time Clover sends a
   // real-money event. Strips noisy keys but keeps shape and ids for diagnosis.
@@ -131,15 +139,31 @@ export async function POST(request: Request) {
     }
 
     if (isSuccess) {
-      // Only fire emails on the first PAID transition — Clover retries can deliver
-      // the same event multiple times, and we never want to send duplicate receipts.
-      const alreadyPaid = order.status === "PAID";
-      if (!alreadyPaid) {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: { status: "PAID" }
-        });
+      // Verify the captured amount matches the order total before flipping to
+      // PAID. paidCents and totalCents are both integer cents. A null amount
+      // (event omitted it) or a mismatch (partial capture, currency mix-up,
+      // tampering) must not silently mark the order paid or dispatch receipts.
+      if (paidCents === null) {
+        console.warn(
+          `Clover webhook: no paid amount on event for order ${order.orderNumber} (checkoutSessionId=${checkoutSessionId}); not marking PAID.`
+        );
+        return NextResponse.json({ ok: true, ignored: true, reason: "missing_amount" });
+      }
+      if (paidCents !== order.totalCents) {
+        console.warn(
+          `Clover webhook: paid amount ${paidCents} does not match order ${order.orderNumber} total ${order.totalCents}; not marking PAID.`
+        );
+        return NextResponse.json({ ok: true, ignored: true, reason: "amount_mismatch" });
+      }
 
+      // Atomic conditional transition: only the delivery that actually flips the
+      // row from non-PAID to PAID gets count === 1. Concurrent/retried Clover
+      // deliveries see count === 0 and skip the emails, so receipts go out once.
+      const updated = await prisma.order.updateMany({
+        where: { id: order.id, status: { not: "PAID" } },
+        data: { status: "PAID" }
+      });
+      if (updated.count === 1) {
         // Build the email payload from the now-PAID order. We coerce shippingAddress
         // through the zod schema so older orders missing fields don't crash the render.
         const shippingAddress = parseShippingAddress(order.shippingAddress);
@@ -198,6 +222,27 @@ function buildAdminOrderUrl(orderId: string): string | undefined {
   const base = process.env.NEXT_PUBLIC_SITE_URL;
   if (!base) return undefined;
   return `${base.replace(/\/$/, "")}/admin/orders?focus=${encodeURIComponent(orderId)}`;
+}
+
+/**
+ * Coerce a Clover amount field into integer cents, or null when it can't be
+ * resolved. Handles plain numbers/numeric strings (already cents) and the
+ * `{ amount }` money-object shape Clover sometimes nests. Returns null for
+ * absent/unparseable values so callers can refuse to mark an order PAID
+ * without a verifiable amount.
+ */
+function parseAmountCents(raw: unknown): number | null {
+  if (raw === undefined || raw === null) return null;
+  if (typeof raw === "number") return Number.isFinite(raw) ? Math.round(raw) : null;
+  if (typeof raw === "bigint") return Number(raw);
+  if (typeof raw === "string") {
+    const n = Number(raw.trim());
+    return Number.isFinite(n) ? Math.round(n) : null;
+  }
+  if (isObject(raw)) {
+    return parseAmountCents(pickField(raw, ["amount", "Amount", "value", "Value"]));
+  }
+  return null;
 }
 
 function pickField(source: Record<string, unknown>, keys: string[]): unknown {

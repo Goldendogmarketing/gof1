@@ -8,17 +8,18 @@ export type PaymentProvider = "square" | "clover";
  *
  * Selection order:
  *  1. PAYMENT_PROVIDER env var, if it names a known provider
- *  2. Whichever provider has its credentials configured (square preferred for backwards compat)
- *  3. Default to "square"
+ *  2. Whichever provider has its credentials configured (Clover preferred —
+ *     Clover is the active provider; Square is legacy)
+ *  3. Default to "clover"
  */
 export function getPaymentProvider(): PaymentProvider {
   const explicit = process.env.PAYMENT_PROVIDER?.trim().toLowerCase();
   if (explicit === "clover") return "clover";
   if (explicit === "square") return "square";
 
-  if (hasSquareConfig()) return "square";
   if (hasCloverConfig()) return "clover";
-  return "square";
+  if (hasSquareConfig()) return "square";
+  return "clover";
 }
 
 export function isPaymentProviderConfigured(provider: PaymentProvider): boolean {

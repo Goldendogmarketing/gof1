@@ -12,7 +12,7 @@ By visiting the Site, browsing our products, creating an account, or placing an 
 
 To use the Site and place an order, you must be at least 18 years old, or the legal age of majority in the state where you live, whichever is older. By using the Site, you represent that you meet this requirement.
 
-Purchases are available only to customers with a valid shipping address located within the fifty United States. We do not currently ship to U.S. territories, military APO/FPO addresses, or destinations outside the United States. Orders placed from outside our shipping area may be cancelled and refunded.
+Purchases are available only to customers with a valid shipping address in the 48 contiguous United States or the District of Columbia. We do not currently ship to Alaska, Hawaii, U.S. territories (such as Puerto Rico, the U.S. Virgin Islands, and Guam), military APO/FPO addresses, or destinations outside the United States. Orders placed from outside our shipping area may be cancelled and refunded. See our Shipping Policy for full details.
 
 ## Your Account
 
@@ -60,7 +60,7 @@ If you believe there is an error on your statement, please contact us before ini
 
 ## Shipping and Risk of Loss
 
-Shipping options, rates, and estimated delivery times are described in our Shipping Policy. We currently ship only to addresses within the fifty United States.
+Shipping options, rates, and estimated delivery times are described in our Shipping Policy. We currently ship only to addresses in the 48 contiguous United States and the District of Columbia.
 
 Some products may be shipped directly to you by Ariston Specialty Foods, an independent supplier, on Greek Olive Fusion's behalf. Regardless of who physically ships an item, your contract of sale for the product is with Greek Olive Fusion.
 
@@ -137,7 +137,7 @@ We may suspend or terminate your access to the Site or your account at any time,
 
 These Terms and any dispute arising out of or relating to them or the Site are governed by the laws of State of Florida, United States, without regard to its conflict-of-laws principles.
 
-Before filing any legal action, you agree to first contact us at [support@greekolivefusion.com] and attempt to resolve the dispute informally. We will make a good-faith effort to respond and work toward a resolution within thirty (30) days of receiving your written notice.
+Before filing any legal action, you agree to first contact us at support@greekolivefusion.com and attempt to resolve the dispute informally. We will make a good-faith effort to respond and work toward a resolution within thirty (30) days of receiving your written notice.
 
 If the dispute is not resolved informally, you and Greek Olive Fusion agree that the exclusive venue for any legal action will be the state or federal courts located in State of Florida, United States, and you consent to the personal jurisdiction of those courts. Nothing in this section prevents either party from bringing an individual claim in a small-claims court of competent jurisdiction.
 
@@ -158,7 +158,5 @@ If you have questions about these Terms or your use of the Site, please contact 
 Greek Olive Fusion, LLC
 8320 Singleton Pl, Keystone Heights, FL 32656
 Phone: +1 (772) 528-5208
-Email: [support@greekolivefusion.com]
-
-*These Terms are a starting template; please have them reviewed by a qualified attorney before relying on them.*
+Email: support@greekolivefusion.com
 `;

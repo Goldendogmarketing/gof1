@@ -37,9 +37,9 @@ const config: Config = {
         ink: "#162013"
       },
       fontFamily: {
-        display: ["Cormorant Garamond", "Georgia", "serif"],
-        sans: ["Inter", "Avenir Next", "Segoe UI", "sans-serif"],
-        greek: ["Cinzel", "Georgia", "serif"]
+        display: ["var(--font-cormorant)", "Georgia", "serif"],
+        serif: ["var(--font-cormorant)", "Georgia", "serif"],
+        sans: ["var(--font-inter)", "Avenir Next", "Segoe UI", "sans-serif"]
       },
       boxShadow: {
         soft: "0 24px 80px rgba(22, 32, 19, 0.12)",

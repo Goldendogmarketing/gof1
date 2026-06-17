@@ -12,9 +12,23 @@ gsap.registerPlugin(ScrollTrigger);
 export function OliveJourney({ scenes, compact = false }: { scenes: JourneySceneView[]; compact?: boolean }) {
   const rootRef = useRef<HTMLElement | null>(null);
   const [active, setActive] = useState(0);
+  // Resolved on the client so SSR markup stays stable; defaults to "no reduced
+  // motion" until we can read the media query.
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    if (compact || !rootRef.current || window.matchMedia("(max-width: 767px)").matches) return;
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    // Skip the ScrollTrigger pin entirely when compact, on mobile, or when the
+    // user prefers reduced motion — in those cases scenes are stacked statically.
+    if (compact || reducedMotion || !rootRef.current || window.matchMedia("(max-width: 767px)").matches) return;
 
     const context = gsap.context(() => {
       ScrollTrigger.create({
@@ -32,7 +46,11 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
     }, rootRef);
 
     return () => context.revert();
-  }, [compact, scenes.length]);
+  }, [compact, reducedMotion, scenes.length]);
+
+  // When reduced motion is requested we render the same stacked scene layout the
+  // mobile breakpoint uses, on every viewport, and we do not autoplay videos.
+  const stacked = reducedMotion;
 
   return (
     <section
@@ -40,10 +58,16 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
       id="olive-journey"
       className={cn(
         "relative scroll-mt-20 bg-olive-900 text-cream",
-        compact ? "py-16" : "md:min-h-[460vh]"
+        compact || stacked ? "py-16" : "md:min-h-[460vh]"
       )}
     >
-      <div className={cn("journey-pin relative hidden overflow-hidden md:block", compact ? "" : "md:h-screen")}>
+      <div
+        className={cn(
+          "journey-pin relative overflow-hidden",
+          stacked ? "hidden" : "hidden md:block",
+          compact ? "" : "md:h-screen"
+        )}
+      >
         <div className="absolute inset-0">
           {scenes.map((scene, index) => {
             const src = scene.imageUrl ?? "/journey/groves.svg";
@@ -111,7 +135,7 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
         </div>
       </div>
 
-      <div className="md:hidden">
+      <div className={cn(stacked ? "block" : "md:hidden")}>
         {scenes.map((scene) => {
           const src = scene.imageUrl ?? "/journey/groves.svg";
           const isVideo = /\.(mp4|webm|mov)$/i.test(src);
@@ -121,8 +145,10 @@ export function OliveJourney({ scenes, compact = false }: { scenes: JourneyScene
                 {isVideo ? (
                   <video
                     src={src}
-                    autoPlay
-                    loop
+                    // Respect reduced-motion: hold on the poster frame instead of
+                    // autoplaying the looping clip.
+                    autoPlay={!reducedMotion}
+                    loop={!reducedMotion}
                     muted
                     playsInline
                     preload="metadata"

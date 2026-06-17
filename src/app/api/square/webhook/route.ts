@@ -51,10 +51,26 @@ export async function POST(request: Request) {
           where: { OR: [{ id: reference }, { orderNumber: reference }] }
         });
         if (order && order.status !== "PAID") {
-          await prisma.order.update({
-            where: { id: order.id },
-            data: { status: "PAID" }
-          });
+          // Verify the amount Square reports as paid matches what we charged
+          // before flipping to PAID. amountMoney.amount is integer cents (it may
+          // arrive as a number or a JSON bigint), so coerce to Number for the
+          // comparison against our integer-cents totalCents. A mismatch (partial
+          // capture, tampering, wrong currency) must never be silently accepted.
+          const paidCents = Number(payment.amountMoney?.amount ?? NaN);
+          if (!Number.isFinite(paidCents)) {
+            console.warn(
+              `Square webhook: missing/invalid paid amount for order ${order.orderNumber} (reference=${reference}); not marking PAID.`
+            );
+          } else if (paidCents !== order.totalCents) {
+            console.warn(
+              `Square webhook: paid amount ${paidCents} does not match order ${order.orderNumber} total ${order.totalCents}; not marking PAID.`
+            );
+          } else {
+            await prisma.order.update({
+              where: { id: order.id },
+              data: { status: "PAID" }
+            });
+          }
         }
       } catch (error) {
         console.warn("Square webhook order update failed:", error);

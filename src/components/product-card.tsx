@@ -77,6 +77,11 @@ export function ProductCard({ product, priority = false }: { product: StoreProdu
               {product.title}
             </h3>
           </Link>
+          {product.shortDescription || product.subtitle ? (
+            <p className="line-clamp-2 text-xs leading-relaxed text-ink/55">
+              {product.shortDescription || product.subtitle}
+            </p>
+          ) : null}
         </div>
 
         <div className="flex items-center justify-between gap-2">

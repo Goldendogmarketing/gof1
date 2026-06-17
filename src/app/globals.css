@@ -51,6 +51,23 @@ select {
   text-wrap: balance;
 }
 
+/*
+ * Accessible gold accent for small text (eyebrows/labels) on light cream/
+ * parchment backgrounds. The Tailwind gold tokens (gold-400 #c8a85a,
+ * gold-600 #98752f) fail WCAG AA (>=4.5:1) for small text on cream (#f7f0df)
+ * / parchment (#fbf7ed). This deepened bronze-gold clears AA (~5.4:1) while
+ * staying visually in the gold family. Defined here as a utility because the
+ * Tailwind config (token source) is owned by another agent and must not be
+ * edited.
+ */
+:root {
+  --gold-accessible: #735312;
+}
+
+.text-gold-accessible {
+  color: var(--gold-accessible);
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

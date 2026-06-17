@@ -2,9 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, ShoppingBag, UserRound, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MiniCart } from "@/components/mini-cart";
 import { useCart } from "@/components/cart-provider";
 import { cn } from "@/lib/utils";
 
@@ -21,10 +24,74 @@ const rightNavItems = [
 
 const navItems = [...leftNavItems, ...rightNavItems];
 
+/**
+ * Global header search. On submit it routes to /shop?query=<term> — the shop
+ * page reads the `query` param to pre-filter results. The param name is the
+ * contract shared with shop-client; keep it exactly `query`.
+ */
+function HeaderSearch({
+  variant,
+  onSubmitted
+}: {
+  variant: "desktop" | "mobile";
+  onSubmitted?: () => void;
+}) {
+  const router = useRouter();
+  const [term, setTerm] = React.useState("");
+  const inputId = `header-search-${variant}`;
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = term.trim();
+    router.push(trimmed ? `/shop?query=${encodeURIComponent(trimmed)}` : "/shop");
+    onSubmitted?.();
+  }
+
+  const isMobile = variant === "mobile";
+
+  return (
+    <form role="search" onSubmit={handleSubmit} className={isMobile ? "relative" : "relative w-44 xl:w-56"}>
+      <label htmlFor={inputId} className="sr-only">
+        Search products
+      </label>
+      <Search
+        className={cn(
+          "pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2",
+          isMobile ? "text-olive-700/55" : "text-cream/70"
+        )}
+        aria-hidden
+      />
+      <Input
+        id={inputId}
+        type="search"
+        name="query"
+        value={term}
+        onChange={(event) => setTerm(event.target.value)}
+        placeholder="Search oils…"
+        autoComplete="off"
+        className={cn(
+          "h-10 pl-9",
+          isMobile
+            ? ""
+            : "border-cream/25 bg-white/10 text-cream placeholder:text-cream/60 focus:border-gold-400 focus:ring-gold-400/20"
+        )}
+      />
+    </form>
+  );
+}
+
 export function Header() {
   const [solid, setSolid] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const { itemCount } = useCart();
+  const { itemCount, openCart } = useCart();
+
+  // Opening the cart icon should pop the same drawer that an add does, so the
+  // header badge and the mini-cart stay in sync.
+  function handleCartClick(event: React.MouseEvent) {
+    event.preventDefault();
+    openCart();
+    setOpen(false);
+  }
 
   React.useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 24);
@@ -104,6 +171,7 @@ export function Header() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <HeaderSearch variant="desktop" />
             <Button
               asChild
               variant="ghost"
@@ -116,7 +184,7 @@ export function Header() {
               </Link>
             </Button>
             <Button asChild variant="secondary" aria-label={`Cart with ${itemCount} items`}>
-              <Link href="/cart" className="relative">
+              <Link href="/cart" onClick={handleCartClick} className="relative">
                 <ShoppingBag className="size-4" />
                 Cart
                 {itemCount > 0 ? (
@@ -133,6 +201,9 @@ export function Header() {
       {open ? (
         <div className="border-t border-olive-700/10 bg-parchment lg:hidden">
           <nav className="container grid gap-1 py-5" aria-label="Mobile navigation">
+            <div className="pb-2">
+              <HeaderSearch variant="mobile" onSubmitted={() => setOpen(false)} />
+            </div>
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -151,7 +222,7 @@ export function Header() {
                 </Link>
               </Button>
               <Button asChild>
-                <Link href="/cart" onClick={() => setOpen(false)}>
+                <Link href="/cart" onClick={handleCartClick}>
                   <ShoppingBag className="size-4" />
                   Cart {itemCount ? `(${itemCount})` : ""}
                 </Link>
@@ -160,6 +231,8 @@ export function Header() {
           </nav>
         </div>
       ) : null}
+
+      <MiniCart />
     </header>
   );
 }

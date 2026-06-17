@@ -12,14 +12,17 @@ export function FeaturedToggle({ productId, initial }: Props) {
   const router = useRouter();
   // Optimistic local state so the checkbox flips instantly while the PATCH
   // is in flight. We reconcile to `initial` on every prop change (which
-  // happens after router.refresh() finishes).
+  // happens after router.refresh() finishes) by adjusting state during render
+  // — the React-recommended alternative to a setState-in-useEffect, which both
+  // avoids the extra render pass and satisfies react-hooks/set-state-in-effect.
   const [checked, setChecked] = React.useState(initial);
+  const [prevInitial, setPrevInitial] = React.useState(initial);
+  if (prevInitial !== initial) {
+    setPrevInitial(initial);
+    setChecked(initial);
+  }
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    setChecked(initial);
-  }, [initial]);
 
   async function toggle(next: boolean) {
     setChecked(next);

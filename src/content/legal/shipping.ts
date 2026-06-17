@@ -1,10 +1,8 @@
 export const SHIPPING_CONTENT = `## Where We Ship
 
-Greek Olive Fusion ships to addresses within the United States only. This includes all 50 states, the District of Columbia, US territories (Puerto Rico, US Virgin Islands, Guam, etc.), and military APO/FPO addresses served by USPS.
+Greek Olive Fusion ships to addresses in the **48 contiguous United States** and the **District of Columbia**.
 
-We do not ship internationally at this time. Our checkout form will not accept non-US addresses, and per our carriers' restrictions, certain PO Box addresses may also be limited.
-
-If you live in Hawaii, Alaska, or a US territory, we'll still get your order to you. Transit usually takes a bit longer to these destinations, and in rare cases a small additional surcharge may apply based on package weight or zone. If a surcharge would apply to your order, we'll contact you before charging anything extra and give you the chance to approve or cancel.
+We currently do **not** ship to Alaska, Hawaii, US territories (Puerto Rico, US Virgin Islands, Guam, etc.), military APO/FPO addresses, or international destinations. Our checkout will only accept addresses in our shipping area, and per our carriers' restrictions certain PO Box addresses may also be limited.
 
 ## Shipping Rates
 
@@ -30,16 +28,13 @@ Once your order is processed and handed to the carrier, you'll receive a **shipm
 
 ## Transit Time
 
-After your order ships, typical transit time is **3–7 business days**, depending on your destination. Orders shipping to Hawaii, Alaska, US territories, or APO/FPO addresses may take a few extra days beyond this range.
+After your order ships, typical transit time is **3–7 business days**, depending on your destination within the contiguous US.
 
-Total time from order placement to delivery is typically:
-
-- **4–10 business days** for most US addresses
-- **A bit longer** for Hawaii, Alaska, territories, and APO/FPO
+Total time from order placement to delivery is typically **4–10 business days** for most addresses.
 
 ## Carriers
 
-We ship via **UPS, FedEx, or USPS**. The exact carrier is chosen at the fulfillment center based on the destination, package size, and current carrier service levels — we cannot guarantee a specific carrier per order. PO Boxes and military APO/FPO addresses are served via USPS.
+We ship via **UPS, FedEx, or USPS**. The exact carrier is chosen at the fulfillment center based on the destination, package size, and current carrier service levels — we cannot guarantee a specific carrier per order. PO Box addresses, where eligible, are served via USPS.
 
 ## Tracking Your Order
 
@@ -78,5 +73,5 @@ For more on returns, exchanges, and refunds beyond shipping damage, please see o
 
 ## Questions?
 
-For any shipping-related questions — tracking issues, address changes before fulfillment, hot-weather holds, or anything else — please reach out to us at **[support@greekolivefusion.com]**. We aim to respond within one business day.
+For any shipping-related questions — tracking issues, address changes before fulfillment, hot-weather holds, or anything else — please reach out to us at **support@greekolivefusion.com**. We aim to respond within one business day.
 `;

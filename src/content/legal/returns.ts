@@ -10,7 +10,7 @@ Glass breaks. Caps loosen. Leaks happen — especially with olive oil traveling 
 
 Here's what we need from you:
 
-- Contact us at [support@greekolivefusion.com] **within 7 days of delivery**.
+- Contact us at support@greekolivefusion.com **within 7 days of delivery**.
 - Include your **order number** in the subject line or first sentence.
 - Attach **clear photos of the damaged item** (the bottle, jar, or product itself).
 - Attach **photos of the outer shipping packaging**, including any visible damage to the box, dents, leaks, or crushed corners.
@@ -19,7 +19,7 @@ The packaging photos matter — they help us file claims with the carrier and im
 
 ## Wrong Item Shipped
 
-If we sent you the wrong product, that's on us. The process is the same as for damaged items: email [support@greekolivefusion.com] within **7 days of delivery** with your order number and a photo of what you received. We'll arrange a full replacement or refund and cover any return shipping if we need the wrong item back.
+If we sent you the wrong product, that's on us. The process is the same as for damaged items: email support@greekolivefusion.com within **7 days of delivery** with your order number and a photo of what you received. We'll arrange a full replacement or refund and cover any return shipping if we need the wrong item back.
 
 ## Lost in Transit
 
@@ -61,7 +61,7 @@ Approved refunds are issued to your **original payment method through Clover**, 
 
 Orders may be cancelled **before fulfillment begins**, which is typically within **1–3 hours of placement**. After that, your order has entered the Ariston fulfillment queue and cannot be modified or cancelled — at that point it must be processed as a return after delivery.
 
-To request a cancellation, email [support@greekolivefusion.com] as soon as possible with your order number and "Cancel Order" in the subject line.
+To request a cancellation, email support@greekolivefusion.com as soon as possible with your order number and "Cancel Order" in the subject line.
 
 ## International Orders
 
@@ -71,7 +71,7 @@ We currently ship within the United States only. EU/EEA consumer rights such as 
 
 To begin any return, replacement, or refund request:
 
-1. Email **[support@greekolivefusion.com]**
+1. Email **support@greekolivefusion.com**
 2. Use the subject line: **"Return Request - Order #XXXX"** (with your actual order number)
 3. In the body, include your order number, the item(s) involved, the reason for the return (damaged, wrong item, unopened return, etc.), and photos if relevant (damaged items, packaging, wrong product).
 
@@ -81,5 +81,5 @@ We'll reply within 1–2 business days with instructions and, where applicable, 
 
 We may update this policy from time to time. The "Last updated" date below reflects the most recent version, and the current version always applies to new orders.
 
-*For questions about a specific return, please contact [support@greekolivefusion.com] — we read every message and want to make it right.*
+*For questions about a specific return, please contact support@greekolivefusion.com — we read every message and want to make it right.*
 `;

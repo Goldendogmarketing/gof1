@@ -81,7 +81,7 @@ Authorization: Bearer $CRON_SECRET
 
 The checkout flow at `/api/checkout` supports two providers, selected by
 the `PAYMENT_PROVIDER` env var (`square` or `clover`). The default is
-`square` so existing deployments keep working until the env var is flipped.
+`clover` (the active provider); `square` is legacy and kept only as a fallback.
 
 ### Clover (Hosted Checkout)
 

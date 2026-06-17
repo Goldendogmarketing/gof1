@@ -26,7 +26,7 @@ export function ProductCarousel({ products }: { products: StoreProduct[] }) {
       <div className="container">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-600">Featured</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gold-accessible">Featured</p>
             <h2 className="font-display text-2xl text-ink sm:text-3xl">Oils ready for the table</h2>
           </div>
           <Button asChild variant="secondary" size="sm">

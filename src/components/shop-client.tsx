@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { Input } from "@/components/ui/input";
@@ -13,13 +14,57 @@ type Facets = {
   sizes: string[];
 };
 
-export function ShopClient({ products, facets }: { products: StoreProduct[]; facets: Facets }) {
-  const [query, setQuery] = React.useState("");
-  const [category, setCategory] = React.useState("all");
+// `useSearchParams` requires a Suspense boundary, so the param-reading shop body
+// is split out and wrapped below. The header search (built by another agent)
+// routes to `/shop?query=...`; we read `query` here to seed the search box.
+export function ShopClient(props: { products: StoreProduct[]; facets: Facets }) {
+  return (
+    <React.Suspense fallback={<ShopGrid {...props} initialQuery="" />}>
+      <ShopClientInner {...props} />
+    </React.Suspense>
+  );
+}
+
+function ShopClientInner(props: { products: StoreProduct[]; facets: Facets }) {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("query") ?? "";
+  const initialCategory = searchParams.get("category") ?? "all";
+  return <ShopGrid {...props} initialQuery={initialQuery} initialCategory={initialCategory} />;
+}
+
+function ShopGrid({
+  products,
+  facets,
+  initialQuery,
+  initialCategory = "all"
+}: {
+  products: StoreProduct[];
+  facets: Facets;
+  initialQuery: string;
+  initialCategory?: string;
+}) {
+  const [query, setQuery] = React.useState(initialQuery);
+  const [category, setCategory] = React.useState(initialCategory);
   const [flavor, setFlavor] = React.useState("all");
   const [size, setSize] = React.useState("all");
   const [price, setPrice] = React.useState("all");
   const [sort, setSort] = React.useState("featured");
+
+  // Keep the search box / category in sync when the header re-navigates to
+  // /shop?query=... while we're already on the page. Adjusting state during
+  // render (tracking the previous prop) is React's recommended alternative to
+  // setState-in-effect and avoids the cascading-render lint rule.
+  const [prevInitialQuery, setPrevInitialQuery] = React.useState(initialQuery);
+  if (prevInitialQuery !== initialQuery) {
+    setPrevInitialQuery(initialQuery);
+    setQuery(initialQuery);
+  }
+
+  const [prevInitialCategory, setPrevInitialCategory] = React.useState(initialCategory);
+  if (prevInitialCategory !== initialCategory) {
+    setPrevInitialCategory(initialCategory);
+    setCategory(initialCategory);
+  }
 
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();

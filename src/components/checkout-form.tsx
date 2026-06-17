@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart-provider";
 import { formatMoney } from "@/lib/format";
 import { calculateShippingCents } from "@/lib/shipping";
 import { shippingAddressSchema } from "@/lib/validations";
+import { SHIPPABLE_US_STATES } from "@/lib/us-states";
 
 type FieldErrors = Partial<Record<
   "email" | "firstName" | "lastName" | "addressLine1" | "city" | "state" | "zip" | "phone",
@@ -111,7 +112,7 @@ export function CheckoutForm() {
         <Field label="Apt, suite, unit (optional)" value={addressLine2} onChange={setAddressLine2} autoComplete="address-line2" />
         <div className="grid gap-3 sm:grid-cols-[1.5fr_1fr_1fr]">
           <Field label="City" value={city} onChange={setCity} error={fieldErrors.city} autoComplete="address-level2" />
-          <Field label="State" value={state} onChange={(v) => setState(v.toUpperCase())} error={fieldErrors.state} placeholder="FL" maxLength={2} autoComplete="address-level1" />
+          <StateField value={state} onChange={setState} error={fieldErrors.state} />
           <Field label="ZIP" value={zip} onChange={setZip} error={fieldErrors.zip} placeholder="34950" autoComplete="postal-code" />
         </div>
         <Field label="Phone" value={phone} onChange={setPhone} error={fieldErrors.phone} placeholder="(772) 555-0123" autoComplete="tel" inputMode="tel" />
@@ -171,6 +172,33 @@ function Field(props: {
         inputMode={props.inputMode}
         aria-invalid={props.error ? true : undefined}
       />
+      {props.error ? <span className="text-xs text-terracotta">{props.error}</span> : null}
+    </label>
+  );
+}
+
+// State dropdown limited to our shipping area (48 contiguous states + DC), so a
+// shopper can't select a destination we don't ship to. Stores the 2-letter code.
+function StateField(props: { value: string; onChange: (next: string) => void; error?: string }) {
+  return (
+    <label className="grid gap-1.5">
+      <span className="text-sm font-semibold text-olive-900">State</span>
+      <select
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+        autoComplete="address-level1"
+        aria-invalid={props.error ? true : undefined}
+        className="h-11 w-full rounded-sm border border-olive-700/20 bg-white/75 px-3 text-sm text-ink outline-none transition focus:border-olive-700 focus:ring-2 focus:ring-olive-700/10"
+      >
+        <option value="" disabled>
+          Select…
+        </option>
+        {SHIPPABLE_US_STATES.map((s) => (
+          <option key={s.code} value={s.code}>
+            {s.code} — {s.name}
+          </option>
+        ))}
+      </select>
       {props.error ? <span className="text-xs text-terracotta">{props.error}</span> : null}
     </label>
   );

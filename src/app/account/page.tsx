@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { authOptions, isAdminSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Account"
+  title: "Account",
+  robots: { index: false, follow: false }
 };
 
 export default async function AccountPage({

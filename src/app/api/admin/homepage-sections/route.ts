@@ -21,7 +21,14 @@ export async function POST(request: Request) {
   }
   if (!hasDatabaseUrl()) return NextResponse.json({ error: "DATABASE_URL is required." }, { status: 400 });
 
-  const input = schema.parse(await request.json());
+  const parsed = schema.safeParse(await request.json());
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid section details." },
+      { status: 400 }
+    );
+  }
+  const input = parsed.data;
   const section = await prisma.homepageSection.upsert({
     where: { key: input.key },
     update: input,

@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Order confirmation — Greek Olive Fusion",
-  description: "Thank you for your order. Your receipt is on the way."
+  description: "Thank you for your order. Your receipt is on the way.",
+  robots: { index: false, follow: false }
 };
 
 type Search = {

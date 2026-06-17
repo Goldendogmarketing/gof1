@@ -1,3 +1,4 @@
+import { cleanProductTitle } from "@/lib/clean-title";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
 import { demoJourneyScenes, demoProducts } from "@/lib/demo-data";
 import { getProductFeedAdapter } from "@/lib/product-feed/adapter";
@@ -16,18 +17,27 @@ function mapProduct(row: ProductRow): StoreProduct {
     return a.sortOrder - b.sortOrder;
   });
 
+  // Defensively clean DB titles too. Rows synced after the title-cleaning change
+  // already store a clean title (sync.ts runs the same normalizer), but rows
+  // synced beforehand may still hold raw feed strings like "... Code#679". This
+  // keeps every surface clean without requiring a re-sync, and backfills an
+  // empty `size` from a trailing size token when one was present in the title.
+  const cleaned = cleanProductTitle(row.title);
+  const title = cleaned.title || row.title;
+  const size = row.size?.trim() || cleaned.size || null;
+
   return {
     id: row.id,
     externalId: row.externalId,
     slug: row.slug,
-    title: row.title,
+    title,
     subtitle: row.subtitle,
     description: row.description,
     shortDescription: row.shortDescription,
     category: row.category?.name ?? "Olive Oil",
     categorySlug: row.category?.slug ?? "olive-oil",
     flavor: row.flavor,
-    size: row.size,
+    size,
     tags: row.tags,
     priceCents: row.priceCents,
     compareAtCents: row.compareAtCents,
@@ -157,6 +167,85 @@ export async function getFeaturedProducts() {
 export async function getProductBySlug(slug: string) {
   const products = await getProducts();
   return products.find((product) => product.slug === slug) ?? null;
+}
+
+export type VariantOption = {
+  slug: string;
+  /** What distinguishes this variant from its siblings (size, then flavor). */
+  label: string;
+  size?: string | null;
+  flavor?: string | null;
+  priceCents: number;
+  compareAtCents?: number | null;
+  currency: string;
+  image: string;
+  inStock: boolean;
+  isCurrent: boolean;
+};
+
+// Derive a grouping key for variant siblings. Each variant is its own slug, so
+// we recover the group from product data: same category + same "base name"
+// (the cleaned title with its size and flavor tokens removed). This is the most
+// reliable signal available without a dedicated `variantGroup` field on the
+// model — see the report for limitations.
+function variantGroupKey(product: StoreProduct): string {
+  let base = product.title.toLowerCase();
+
+  // Drop the flavor word(s) so "Lemon Infused Olive Oil" and
+  // "Garlic Infused Olive Oil" do NOT collapse into one group — flavor is a
+  // distinct product line, not a variant. We only group by size within a flavor.
+  if (product.flavor) {
+    base = base.replace(new RegExp(`\\b${escapeRegExp(product.flavor.toLowerCase())}\\b`, "g"), " ");
+  }
+  if (product.size) {
+    base = base.replace(new RegExp(`\\b${escapeRegExp(product.size.toLowerCase())}\\b`, "g"), " ");
+  }
+  // Strip residual standalone size-like tokens (e.g. "250ml", "8.45 fl oz").
+  base = base.replace(/\b\d+(?:\.\d+)?\s*(?:x\s*\d+(?:\.\d+)?\s*)?(?:fl\s*oz|oz|ml|l|g|kg|cl)\b/g, " ");
+
+  base = base.replace(/[^a-z0-9]+/g, " ").trim();
+  return `${product.categorySlug}::${base}`;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Return the sibling variants of a product (including itself) that share a base
+ * name and category but differ by size. Returns an empty array when no genuine
+ * siblings exist, so the UI can render nothing gracefully. Variants are
+ * distinguished by their `size`; if siblings somehow share a size we fall back
+ * to the flavor or slug for a stable, human-readable label.
+ */
+export async function getProductSiblings(slug: string): Promise<VariantOption[]> {
+  const products = await getProducts();
+  const current = products.find((product) => product.slug === slug);
+  if (!current) return [];
+
+  const key = variantGroupKey(current);
+  const group = products.filter((product) => variantGroupKey(product) === key);
+
+  // A lone product is not a variant set — report nothing so the selector hides.
+  if (group.length < 2) return [];
+
+  const distinctLabels = new Set(group.map((product) => product.size ?? ""));
+  const labelBySize = distinctLabels.size === group.length;
+
+  return group
+    .map((product) => ({
+      slug: product.slug,
+      label: (labelBySize ? product.size : null) || product.flavor || product.size || product.title,
+      size: product.size,
+      flavor: product.flavor,
+      priceCents: product.priceCents,
+      compareAtCents: product.compareAtCents ?? null,
+      currency: product.currency,
+      image: product.image,
+      inStock: product.inventory.quantity > 0,
+      isCurrent: product.slug === current.slug
+    }))
+    .sort((a, b) => a.priceCents - b.priceCents);
 }
 
 export async function getProductFacets() {
