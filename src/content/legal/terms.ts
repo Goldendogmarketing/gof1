@@ -137,7 +137,7 @@ We may suspend or terminate your access to the Site or your account at any time,
 
 These Terms and any dispute arising out of or relating to them or the Site are governed by the laws of State of Florida, United States, without regard to its conflict-of-laws principles.
 
-Before filing any legal action, you agree to first contact us at support@greekolivefusion.com and attempt to resolve the dispute informally. We will make a good-faith effort to respond and work toward a resolution within thirty (30) days of receiving your written notice.
+Before filing any legal action, you agree to first contact us at orders@greekolivefusion.com and attempt to resolve the dispute informally. We will make a good-faith effort to respond and work toward a resolution within thirty (30) days of receiving your written notice.
 
 If the dispute is not resolved informally, you and Greek Olive Fusion agree that the exclusive venue for any legal action will be the state or federal courts located in State of Florida, United States, and you consent to the personal jurisdiction of those courts. Nothing in this section prevents either party from bringing an individual claim in a small-claims court of competent jurisdiction.
 
@@ -158,5 +158,5 @@ If you have questions about these Terms or your use of the Site, please contact 
 Greek Olive Fusion, LLC
 8320 Singleton Pl, Keystone Heights, FL 32656
 Phone: +1 (772) 528-5208
-Email: support@greekolivefusion.com
+Email: orders@greekolivefusion.com
 `;

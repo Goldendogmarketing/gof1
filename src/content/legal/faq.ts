@@ -32,11 +32,11 @@ Our infused oils — lemon, garlic, basil, rosemary, chili, and truffle — star
 
 Our products include olives, olive oils, and other specialty Mediterranean foods. Some items may contain, or be produced in facilities that also handle, common allergens such as tree nuts, peanuts, sesame, wheat and other sources of gluten, dairy, eggs, soy, fish, and shellfish. Cross-contact can occur even when an allergen is not listed as an ingredient.
 
-**Always read the physical product label and allergen statement on each item before consuming it or serving it to others.** If you have a food allergy or dietary restriction and you're unsure about an ingredient, email us at **support@greekolivefusion.com** before ordering and we're happy to clarify.
+**Always read the physical product label and allergen statement on each item before consuming it or serving it to others.** If you have a food allergy or dietary restriction and you're unsure about an ingredient, email us at **orders@greekolivefusion.com** before ordering and we're happy to clarify.
 
 ## What if my order arrives damaged?
 
-Glass bottles and long transits don't always mix, so if your order arrives **damaged or defective**, we'll make it right with a full refund or a free replacement — your choice. Contact us at **support@greekolivefusion.com within 7 days of delivery** with your order number and clear photos of the damaged item and the outer shipping packaging. In most cases you won't need to ship anything back. Full details are in our Returns Policy.
+Glass bottles and long transits don't always mix, so if your order arrives **damaged or defective**, we'll make it right with a full refund or a free replacement — your choice. Contact us at **orders@greekolivefusion.com within 7 days of delivery** with your order number and clear photos of the damaged item and the outer shipping packaging. In most cases you won't need to ship anything back. Full details are in our Returns Policy.
 
 ## What's your return policy?
 
@@ -50,5 +50,5 @@ To start any return, email us first for an RMA number — please don't ship anyt
 
 ## Still have a question?
 
-We're happy to help with anything about our oils, your order, pairings, or gifting. Email us at **support@greekolivefusion.com** or call **+1 (772) 528-5208**, and we aim to respond within one business day.
+We're happy to help with anything about our oils, your order, pairings, or gifting. Email us at **orders@greekolivefusion.com** or call **+1 (772) 528-5208**, and we aim to respond within one business day.
 `;

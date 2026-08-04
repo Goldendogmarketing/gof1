@@ -102,7 +102,7 @@ export default async function OrderConfirmationPage({
         </div>
 
         <p className="text-center text-xs text-ink/50">
-          Need help? Email <a href="mailto:support@greekolivefusion.com" className="underline">support@greekolivefusion.com</a>
+          Need help? Email <a href="mailto:orders@greekolivefusion.com" className="underline">orders@greekolivefusion.com</a>
           {" "}or call (772) 528-5208.
         </p>
       </section>

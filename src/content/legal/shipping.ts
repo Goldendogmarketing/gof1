@@ -73,5 +73,5 @@ For more on returns, exchanges, and refunds beyond shipping damage, please see o
 
 ## Questions?
 
-For any shipping-related questions — tracking issues, address changes before fulfillment, hot-weather holds, or anything else — please reach out to us at **support@greekolivefusion.com**. We aim to respond within one business day.
+For any shipping-related questions — tracking issues, address changes before fulfillment, hot-weather holds, or anything else — please reach out to us at **orders@greekolivefusion.com**. We aim to respond within one business day.
 `;

@@ -46,12 +46,12 @@ const organizationJsonLd = {
   name: "Greek Olive Fusion",
   url: SITE_URL,
   logo: `${SITE_URL}/brand/greek-olive-fusion-logo.png`,
-  email: "support@greekolivefusion.com",
+  email: "orders@greekolivefusion.com",
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+1-772-528-5208",
     contactType: "customer service",
-    email: "support@greekolivefusion.com"
+    email: "orders@greekolivefusion.com"
   }
 };
 

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions, isAdminSession } from "@/lib/auth";
 import { createCloverHostedCheckout, hasCloverConfig } from "@/lib/clover";
 import { orderNumber } from "@/lib/format";
 import { prisma, hasDatabaseUrl } from "@/lib/db";
@@ -22,6 +24,13 @@ function absoluteUrl(path: string) {
 }
 
 export async function POST(request: Request) {
+  // Admin-only: this triggers a real (if tiny) charge, so it must never be
+  // publicly callable.
+  const session = await getServerSession(authOptions);
+  if (!isAdminSession(session)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!hasCloverConfig()) {
     return NextResponse.json({ error: "Clover is not configured." }, { status: 503 });
   }

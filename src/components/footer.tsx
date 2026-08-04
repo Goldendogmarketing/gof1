@@ -105,8 +105,8 @@ export function Footer() {
           <div className="space-y-1 text-xs text-cream/55">
             <p>
               Questions?{" "}
-              <a href="mailto:support@greekolivefusion.com" className="underline hover:text-white">
-                support@greekolivefusion.com
+              <a href="mailto:orders@greekolivefusion.com" className="underline hover:text-white">
+                orders@greekolivefusion.com
               </a>
             </p>
             <p>
@@ -141,6 +141,8 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10 py-5 text-center text-xs text-cream/55">
         © {new Date().getFullYear()} Greek Olive Fusion. Connected to Ariston Specialties.
+        <span className="mx-2 text-cream/30">·</span>
+        <a href="/sitemap.xml" className="text-cream/40 transition hover:text-cream/70">Sitemap</a>
       </div>
     </footer>
   );

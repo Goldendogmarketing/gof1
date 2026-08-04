@@ -63,8 +63,8 @@ export function ContactForm() {
       {status === "email-not-configured" ? (
         <p className="rounded-sm border border-gold-400/40 bg-gold-50/40 p-3 text-sm text-ink/75">
           Our contact inbox isn&apos;t fully set up yet. Please email us directly at{" "}
-          <a href="mailto:support@greekolivefusion.com" className="underline">
-            support@greekolivefusion.com
+          <a href="mailto:orders@greekolivefusion.com" className="underline">
+            orders@greekolivefusion.com
           </a>{" "}
           and we&apos;ll respond within one business day.
         </p>
@@ -72,8 +72,8 @@ export function ContactForm() {
       {status === "error" ? (
         <p className="text-sm font-semibold text-terracotta">
           Message could not be sent. Please email{" "}
-          <a href="mailto:support@greekolivefusion.com" className="underline">
-            support@greekolivefusion.com
+          <a href="mailto:orders@greekolivefusion.com" className="underline">
+            orders@greekolivefusion.com
           </a>{" "}
           directly.
         </p>

@@ -24,8 +24,8 @@ export default function ContactPage() {
               <div>
                 <dt className="text-sm font-semibold uppercase tracking-wide text-ink/55">Email</dt>
                 <dd className="mt-1 text-lg text-ink">
-                  <a href="mailto:support@greekolivefusion.com" className="text-olive-700 underline hover:text-olive-900">
-                    support@greekolivefusion.com
+                  <a href="mailto:orders@greekolivefusion.com" className="text-olive-700 underline hover:text-olive-900">
+                    orders@greekolivefusion.com
                   </a>
                 </dd>
               </div>
