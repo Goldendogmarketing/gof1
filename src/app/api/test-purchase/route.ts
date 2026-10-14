@@ -73,7 +73,8 @@ export async function POST(request: Request) {
           items: {
             create: [
               {
-                productId: "test-dollar",
+                // Not a catalog product, so no productId (the column is optional).
+                sku: "GOF-TEST-1",
                 title: TEST_ITEM_NAME,
                 quantity: 1,
                 unitPriceCents: TEST_PRICE_CENTS,

@@ -15,6 +15,7 @@ export type StoreProduct = {
   categorySlug: string;
   flavor?: string | null;
   size?: string | null;
+  sku?: string | null;
   tags: string[];
   priceCents: number;
   compareAtCents?: number | null;

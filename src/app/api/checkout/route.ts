@@ -90,6 +90,7 @@ export async function POST(request: Request) {
           items: {
             create: validLines.map((line) => ({
               productId: line.product.id,
+              sku: line.product.sku ?? null,
               title: line.product.title,
               quantity: line.quantity,
               unitPriceCents: line.product.priceCents,

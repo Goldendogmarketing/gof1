@@ -230,6 +230,11 @@ model Order {
   discountCode          DiscountCode? @relation(fields: [discountCodeId], references: [id], onDelete: SetNull)
   shippingAddress       Json?
   billingAddress        Json?
+  // Per-recipient result of the order emails sent when the order was paid:
+  // { customer, owner, dropship } each { sent, id?, to?, reason?, at }.
+  emailLog              Json?
+  // When the Ariston drop-ship email was last accepted by the mail provider.
+  dropshipEmailSentAt   DateTime?
   items                 OrderItem[]
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
@@ -239,10 +244,13 @@ model OrderItem {
   id        String          @id @default(cuid())
   orderId   String
   order     Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product         @relation(fields: [productId], references: [id])
+  // Optional so non-catalog lines (e.g. the $1 admin payment test) can be stored.
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id])
   variantId String?
   variant   ProductVariant? @relation(fields: [variantId], references: [id])
+  // SKU snapshot at purchase time, so the order keeps it even if the catalog changes.
+  sku       String?
   title     String
   quantity  Int
   unitPriceCents Int

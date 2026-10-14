@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { hasDatabaseUrl, prisma } from "@/lib/db";
 import { verifyCloverWebhookSignature } from "@/lib/clover";
-import { sendAllOrderEmails, type OrderEmailPayload } from "@/lib/email";
-import { shippingAddressSchema, type ShippingAddress } from "@/lib/validations";
+import { sendAndRecordOrderEmails } from "@/lib/order-emails";
 
 // Clover webhooks must be processed with the raw body (the signature is computed over it),
 // so we force the Node runtime — Edge gets a different request body API.
@@ -164,34 +163,11 @@ export async function POST(request: Request) {
         data: { status: "PAID" }
       });
       if (updated.count === 1) {
-        // Build the email payload from the now-PAID order. We coerce shippingAddress
-        // through the zod schema so older orders missing fields don't crash the render.
-        const shippingAddress = parseShippingAddress(order.shippingAddress);
-        const payload: OrderEmailPayload = {
-          orderNumber: order.orderNumber,
-          customerEmail: order.email,
-          shippingAddress,
-          lineItems: order.items.map((item) => ({
-            title: item.title,
-            quantity: item.quantity,
-            unitPriceCents: item.unitPriceCents,
-            totalCents: item.totalCents
-          })),
-          subtotalCents: order.subtotalCents,
-          discountCents: order.discountCents,
-          shippingCents: order.shippingCents,
-          taxCents: order.taxCents,
-          totalCents: order.totalCents,
-          currency: order.currency,
-          adminUrl: buildAdminOrderUrl(order.id)
-        };
-
-        // Fire-and-don't-fail: log per-email result, never propagate to Clover.
-        // Test orders (orderNumber prefixed "TEST-") skip the Ariston fulfillment
-        // email so a live payment test never reaches the drop-ship partner.
-        const isTestOrder = order.orderNumber.startsWith("TEST-");
+        // Fire-and-don't-fail: send customer/owner/Ariston emails and record each
+        // result on the order (shown in /admin/orders). Never propagate to Clover.
+        // Test orders ("TEST-" prefix) skip the Ariston email.
         try {
-          const results = await sendAllOrderEmails(payload, { skipDropship: isTestOrder });
+          const results = await sendAndRecordOrderEmails(order);
           console.info(
             `Clover webhook emails sent for ${order.orderNumber}:`,
             JSON.stringify(results)
@@ -213,18 +189,6 @@ export async function POST(request: Request) {
     // Return 500 so Clover retries the delivery.
     return NextResponse.json({ error: "Order update failed" }, { status: 500 });
   }
-}
-
-function parseShippingAddress(raw: unknown): ShippingAddress | null {
-  if (!raw || typeof raw !== "object") return null;
-  const parsed = shippingAddressSchema.safeParse(raw);
-  return parsed.success ? parsed.data : null;
-}
-
-function buildAdminOrderUrl(orderId: string): string | undefined {
-  const base = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!base) return undefined;
-  return `${base.replace(/\/$/, "")}/admin/orders?focus=${encodeURIComponent(orderId)}`;
 }
 
 /**

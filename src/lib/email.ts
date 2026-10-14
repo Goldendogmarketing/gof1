@@ -8,6 +8,7 @@ import { formatMoney } from "@/lib/format";
 
 export type OrderEmailLineItem = {
   title: string;
+  sku?: string | null;
   quantity: number;
   unitPriceCents: number;
   totalCents: number;
@@ -28,7 +29,8 @@ export type OrderEmailPayload = {
   adminUrl?: string;
 };
 
-type SendResult = { sent: boolean; reason?: string };
+/** Outcome of one email send. `id` is the mail provider's message id when accepted. */
+export type SendResult = { sent: boolean; id?: string; to?: string; reason?: string };
 
 function getResend() {
   const key = process.env.RESEND_API_KEY;
@@ -81,6 +83,7 @@ function renderLineItemsTable(items: OrderEmailLineItem[], currency = "USD") {
         <tr>
           <td style="padding:10px 0;border-bottom:1px solid #e5e1d6;">
             <div style="font-weight:600;color:#172214;">${escapeHtml(item.title)}</div>
+            ${item.sku ? `<div style="color:#7a7567;font-size:12px;font-family:monospace;">SKU ${escapeHtml(item.sku)}</div>` : ""}
             <div style="color:#7a7567;font-size:13px;">Qty ${item.quantity} &middot; ${formatMoney(item.unitPriceCents, currency)} each</div>
           </td>
           <td style="padding:10px 0;border-bottom:1px solid #e5e1d6;text-align:right;font-weight:600;color:#172214;">
@@ -154,7 +157,7 @@ export async function sendCustomerReceipt(payload: OrderEmailPayload): Promise<S
     html: wrapHtml("Order confirmed", body)
   });
 
-  return { sent: !result.error, reason: result.error?.message };
+  return { sent: !result.error, id: result.data?.id, to: payload.customerEmail, reason: result.error?.message };
 }
 
 // ---------------------------------------------------------------------------
@@ -196,7 +199,7 @@ export async function sendOwnerOrderNotification(payload: OrderEmailPayload): Pr
     html: wrapHtml("New paid order", body)
   });
 
-  return { sent: !result.error, reason: result.error?.message };
+  return { sent: !result.error, id: result.data?.id, to, reason: result.error?.message };
 }
 
 // ---------------------------------------------------------------------------
@@ -230,7 +233,8 @@ export async function sendDropshipOrderEmail(payload: OrderEmailPayload): Promis
     `ITEMS`,
     `-----`,
     ...payload.lineItems.map(
-      (item) => `${item.quantity}x  ${item.title}   (${formatMoney(item.unitPriceCents, payload.currency ?? "USD")} ea = ${formatMoney(item.totalCents, payload.currency ?? "USD")})`
+      (item) =>
+        `${item.quantity}x  ${item.title}${item.sku ? `  [SKU ${item.sku}]` : ""}   (${formatMoney(item.unitPriceCents, payload.currency ?? "USD")} ea = ${formatMoney(item.totalCents, payload.currency ?? "USD")})`
     ),
     ``,
     `TOTALS`,
@@ -270,7 +274,7 @@ export async function sendDropshipOrderEmail(payload: OrderEmailPayload): Promis
     text: textLines
   });
 
-  return { sent: !result.error, reason: result.error?.message };
+  return { sent: !result.error, id: result.data?.id, to, reason: result.error?.message };
 }
 
 // ---------------------------------------------------------------------------
