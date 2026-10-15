@@ -196,3 +196,45 @@ export function verifyCloverWebhookSignature(
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
 }
+
+// ---------------------------------------------------------------------------
+// Payment lookup — used to confirm a payment really landed in Clover before an
+// admin manually marks a stuck order as paid.
+// ---------------------------------------------------------------------------
+
+export type CloverPaymentMatch = { id: string; amountCents: number; createdTime: number };
+
+/**
+ * Find a successful Clover payment for exactly `amountCents`, created at or after
+ * `sinceMs`. Returns the earliest match, or null when none exists.
+ */
+export async function findCloverPayment(input: { amountCents: number; sinceMs: number }): Promise<CloverPaymentMatch | null> {
+  const token = getCloverApiToken();
+  const merchantId = getCloverMerchantId();
+  if (!token || !merchantId) {
+    throw new Error("Clover is not configured. Set CLOVER_API_TOKEN and CLOVER_MERCHANT_ID.");
+  }
+
+  const url = new URL(`${getCloverApiBaseUrl()}/v3/merchants/${merchantId}/payments`);
+  url.searchParams.append("filter", `amount=${input.amountCents}`);
+  url.searchParams.append("filter", `createdTime>=${input.sinceMs}`);
+  url.searchParams.set("limit", "20");
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    cache: "no-store"
+  });
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(`Clover payment lookup failed (${response.status}): ${text || response.statusText}`);
+  }
+
+  const data = (await response.json()) as {
+    elements?: Array<{ id: string; amount: number; result?: string; createdTime: number }>;
+  };
+  const matches = (data.elements ?? [])
+    .filter((payment) => payment.result === "SUCCESS" && payment.amount === input.amountCents)
+    .sort((a, b) => a.createdTime - b.createdTime);
+  const first = matches[0];
+  return first ? { id: first.id, amountCents: first.amount, createdTime: first.createdTime } : null;
+}

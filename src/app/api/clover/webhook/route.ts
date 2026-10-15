@@ -46,10 +46,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
 
-  // Clover wraps event details under `data` (sometimes `Data`). Unwrap that first,
-  // then look for the fields we care about. The previous flat lookup pulled the
-  // entire data object back and stringified it to "[object Object]", so no order
-  // ever matched and PAID transitions silently never fired.
+  // Clover Hosted Checkout posts a flat payload:
+  //   { type: "PAYMENT", status: "APPROVED", id: <payment id>, merchantId,
+  //     created, message: "Approved for 11997", data: "<checkout session id>" }
+  // `data` is a plain string holding the checkout session id, and the amount only
+  // appears inside `message`. We still accept an object-shaped `data` defensively.
   const dataObject =
     (isObject(event.data) && (event.data as Record<string, unknown>)) ||
     (isObject(event.Data) && (event.Data as Record<string, unknown>)) ||
@@ -65,19 +66,23 @@ export async function POST(request: Request) {
       pickField(dataObject, ["status", "Status"]) ??
       ""
   ).toUpperCase();
+  const stringData =
+    (typeof event.data === "string" && event.data) || (typeof event.Data === "string" && event.Data) || "";
   const checkoutSessionId = String(
-    pickField(dataObject, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ??
-      pickField(event, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ??
+    stringData ||
+      pickField(dataObject, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ||
+      pickField(event, ["checkoutSessionId", "CheckoutSessionId", "checkoutSessionID"]) ||
       ""
-  );
-  // Clover reports the captured amount in integer cents (same unit as our
-  // totalCents). It can surface under a few key names depending on the event
-  // shape; null when absent so we can refuse to mark PAID without a verifiable
-  // amount rather than trusting the event blindly.
-  const paidCents = parseAmountCents(
-    pickField(dataObject, ["amount", "Amount", "amountMoney", "total", "Total"]) ??
-      pickField(event, ["amount", "Amount", "amountMoney", "total", "Total"])
-  );
+  ).trim();
+  const message = String(pickField(event, ["message", "Message"]) ?? "");
+  const cloverPaymentId = String(pickField(event, ["id", "Id"]) ?? "");
+  // Amount in integer cents: an explicit amount field if Clover ever sends one,
+  // otherwise parsed from the message ("Approved for 11997"). Null if absent.
+  const paidCents =
+    parseAmountCents(
+      pickField(dataObject, ["amount", "Amount", "amountMoney", "total", "Total"]) ??
+        pickField(event, ["amount", "Amount", "amountMoney", "total", "Total"])
+    ) ?? parseAmountFromMessage(message);
 
   // Log everything once on prod — invaluable the first time Clover sends a
   // real-money event. Strips noisy keys but keeps shape and ids for diagnosis.
@@ -85,6 +90,9 @@ export async function POST(request: Request) {
     type,
     status,
     checkoutSessionId,
+    cloverPaymentId,
+    message,
+    paidCents,
     eventKeys: Object.keys(event),
     dataKeys: isObject(dataObject) ? Object.keys(dataObject) : []
   });
@@ -142,14 +150,15 @@ export async function POST(request: Request) {
       // PAID. paidCents and totalCents are both integer cents. A null amount
       // (event omitted it) or a mismatch (partial capture, currency mix-up,
       // tampering) must not silently mark the order paid or dispatch receipts.
+      // The HMAC signature already proves the event came from Clover for this
+      // checkout session, so a missing amount is not a reason to drop a real
+      // payment — log it and proceed. A present-but-different amount is refused.
       if (paidCents === null) {
         console.warn(
-          `Clover webhook: no paid amount on event for order ${order.orderNumber} (checkoutSessionId=${checkoutSessionId}); not marking PAID.`
+          `Clover webhook: could not read an amount for order ${order.orderNumber} (message="${message}"); proceeding on verified signature.`
         );
-        return NextResponse.json({ ok: true, ignored: true, reason: "missing_amount" });
-      }
-      if (paidCents !== order.totalCents) {
-        console.warn(
+      } else if (paidCents !== order.totalCents) {
+        console.error(
           `Clover webhook: paid amount ${paidCents} does not match order ${order.orderNumber} total ${order.totalCents}; not marking PAID.`
         );
         return NextResponse.json({ ok: true, ignored: true, reason: "amount_mismatch" });
@@ -160,7 +169,8 @@ export async function POST(request: Request) {
       // deliveries see count === 0 and skip the emails, so receipts go out once.
       const updated = await prisma.order.updateMany({
         where: { id: order.id, status: { not: "PAID" } },
-        data: { status: "PAID" }
+        // stripePaymentIntentId is repurposed to hold the Clover payment id.
+        data: { status: "PAID", ...(cloverPaymentId ? { stripePaymentIntentId: cloverPaymentId } : {}) }
       });
       if (updated.count === 1) {
         // Fire-and-don't-fail: send customer/owner/Ariston emails and record each
@@ -210,6 +220,20 @@ function parseAmountCents(raw: unknown): number | null {
     return parseAmountCents(pickField(raw, ["amount", "Amount", "value", "Value"]));
   }
   return null;
+}
+
+/**
+ * Pull the amount out of Clover's message, e.g. "Approved for 11997". Clover's
+ * REST API reports amounts in integer cents, so a bare integer is cents; a
+ * decimal like "119.97" is treated as dollars.
+ */
+function parseAmountFromMessage(message: string): number | null {
+  const match = message.match(/(\d+(?:\.\d{1,2})?)/);
+  if (!match) return null;
+  const raw = match[1];
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return null;
+  return raw.includes(".") ? Math.round(value * 100) : Math.round(value);
 }
 
 function pickField(source: Record<string, unknown>, keys: string[]): unknown {

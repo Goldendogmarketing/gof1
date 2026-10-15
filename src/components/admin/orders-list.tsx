@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, ChevronDown, ChevronRight, Clock3, MinusCircle, RotateCw, Trash2, XCircle } from "lucide-react";
+import { BadgeCheck, CheckCircle2, ChevronDown, ChevronRight, Clock3, MinusCircle, RotateCw, Trash2, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export type AdminOrderRow = {
   shippingAddress: ShippingAddress | null;
   emailLog: EmailLog | null;
   isTest: boolean;
+  cloverPaymentId: string | null;
   createdAt: string;
 };
 
@@ -326,6 +327,14 @@ function OrderDetail({ order }: { order: AdminOrderRow }) {
           )}
         </div>
 
+        {order.status === "PENDING" || order.status === "DRAFT" ? <MarkPaidPanel order={order} /> : null}
+        {order.cloverPaymentId ? (
+          <div>
+            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-olive-700/80">Clover payment</h3>
+            <p className="break-all font-mono text-xs text-ink/70">{order.cloverPaymentId}</p>
+          </div>
+        ) : null}
+
         <EmailConfirmations order={order} />
       </div>
     </div>
@@ -467,6 +476,72 @@ function EmailLine({
             {entry.reason ? <>: {entry.reason}</> : null}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function MarkPaidPanel({ order }: { order: AdminOrderRow }) {
+  const router = useRouter();
+  const [busy, setBusy] = React.useState(false);
+  const [message, setMessage] = React.useState<{ ok: boolean; text: string } | null>(null);
+
+  async function markPaid(force = false) {
+    if (
+      !force &&
+      !window.confirm(
+        `Check Clover for a ${formatMoney(order.totalCents, order.currency)} payment and mark ${order.orderNumber} as PAID?
+
+This sends the customer receipt, owner alert${order.isTest ? "" : ", and the Ariston fulfillment email"}.`
+      )
+    ) {
+      return;
+    }
+    setBusy(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}/mark-paid${force ? "?force=true" : ""}`, { method: "POST" });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setMessage({ ok: true, text: body.cloverPaymentId ? `Marked paid — Clover payment ${body.cloverPaymentId}.` : "Marked paid." });
+        router.refresh();
+        return;
+      }
+      if (body.needsForce && !force) {
+        const override = window.confirm(
+          `${body.error ?? "No matching Clover payment found."}
+
+Only continue if you've confirmed the payment yourself (e.g. Joe has the receipt). Mark as PAID anyway?`
+        );
+        if (override) {
+          setBusy(false);
+          await markPaid(true);
+          return;
+        }
+      }
+      setMessage({ ok: false, text: body.error ?? "Could not mark as paid." });
+    } catch (err) {
+      setMessage({ ok: false, text: err instanceof Error ? err.message : "Could not mark as paid." });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="rounded-sm border border-gold-400/40 bg-gold-400/5 p-3">
+      <div className="text-sm font-semibold text-ink">Paid in Clover but still pending?</div>
+      <p className="mt-1 text-xs leading-5 text-ink/65">
+        If the payment notice from Clover was missed, this checks Joe&rsquo;s Clover account for a matching payment,
+        marks the order PAID, and sends the order emails.
+      </p>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <Button type="button" size="sm" onClick={() => markPaid(false)} disabled={busy}>
+          <BadgeCheck className="size-4" />
+          {busy ? "Checking Clover…" : "Check Clover & mark paid"}
+        </Button>
+        {message ? (
+          <span className={`text-xs font-semibold ${message.ok ? "text-olive-700" : "text-terracotta"}`}>{message.text}</span>
+        ) : null}
       </div>
     </div>
   );

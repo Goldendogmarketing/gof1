@@ -58,6 +58,8 @@ export default async function AdminOrdersPage({
       shippingAddress: address.success ? address.data : null,
       emailLog: (row.emailLog as EmailLog | null) ?? null,
       isTest: isTestOrder(row.orderNumber),
+      // stripePaymentIntentId holds the Clover payment id for Clover orders.
+      cloverPaymentId: row.stripePaymentIntentId,
       createdAt: row.createdAt.toISOString()
     };
   });
